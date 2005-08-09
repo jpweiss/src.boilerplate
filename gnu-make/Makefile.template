@@ -121,7 +121,6 @@ make.libobjsV.mk: $(SRC)
 #	  cd subdir && $(MAKE) make.libobjsV.mk
 
 
-
 #
 # Installation rules.
 
@@ -245,7 +244,8 @@ tardist: install srcdocs
 	cd $(INSTALLROOT); strip $(BINDIR_rel)/*; \
 	cd $(BINDIR); strip *; cd ../; \
 	find $(BINDIR_rel) $(LIBDIR_rel) $(INCDIR_rel) \
-		\( -path "*/scratch*" -o -path "*/CVS/*" \) -prune -o -print \
+		\( -path "*/scratch*" -o \
+		   -path "*/CVS/*" -o -path "*/.svn/*" \) -prune -o -print \
         | tar -zcf $${tarpkg} -p --files-from=- ; \
 	chmod -R +w $(SRCDOCDIR); \
 	)
@@ -259,7 +259,8 @@ tardist.src: install srcdocs
 	BASEDIR_rel=`basename $(BASEDIR)`; \
 	cd ../; \
 	find $${BASEDIR_rel} \
-		\( -path "*/scratch*" -o -path "*/CVS/*" \) -prune -o \
+		\( -path "*/scratch*" -o \
+		   -path "*/CVS/*" -o -path "*/.svn/*" \) -prune -o \
 		\( -name '*.h' -o -name '*.C' -o -name '*.cc' -o -name '*.c'\
 			-o -name '*.txt' \
 			-o -name '*akefile' -o -name '*akefile.*' -o -name '*.mk' \

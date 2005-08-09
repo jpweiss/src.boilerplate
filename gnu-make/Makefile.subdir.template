@@ -38,13 +38,17 @@ clean: $(TARG_SUBDIRS:%=%.clean)
 
 # Remove the "find" line if this isn't the toplevel Makefile.
 veryclean: $(TARG_SUBDIRS:%=%.veryclean)
-	find . -name '*.d' -exec rm -v \{\}\;
 
 gcov: $(TARG_SUBDIRS:%=%.gcov)
 
 
 # Remove or alter these as needed.
+clean_gcov:
+	-find . \( -name '*.gcov' -o  -name '*.gcda' -o  -name '*.gcno' \) \
+		-exec rm -v '{}' ';'
+
 distclean: $(TARG_SUBDIRS:%=%.veryclean)
+	find . -name '*.d' -exec rm -v \{\}\;
 	-rm bin/*
 	-rm lib/*.a lib/*.so
 
@@ -59,6 +63,17 @@ $(TARG_SUBDIRS:%=%.veryclean):
 
 $(TARG_SUBDIRS:%=%.gcov):
 	cd $(@:%.gcov=%); make gcov
+
+tags: TAGS
+
+TAGS:
+	(\
+	find . \( \
+		`echo -name\ '*.'{h,C,cc,c,sh,p{m,l},js,java}\ -o\ `\
+		`echo -name\ '*.'{octave,m,f,xml,tcl,el}\ -o\ `\
+		-name '*akefile' -o -name '*.mk' \) -print0 \
+	| xargs -0 etags --declarations -d \
+	)
 
 
 #################
