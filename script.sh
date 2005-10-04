@@ -55,12 +55,25 @@ LS=ls
 
 case "$0" in
     *bash)
-        # Was sourced.
+        file_was_sourced='y'
         ;;
     *)
-        # Was run as a script.
+        if [ ${#BASH_SOURCE[*]} -gt 1 ]; then
+            file_was_sourced='y'
+        fi
         ;;
 esac
+
+
+if [ -n "$file_was_sourced" ]; then
+    # Was sourced.  Remove the temporary variable created during the startup
+    # checks.
+    unset file_was_sourced
+else
+    # Was run as a script.  Perform any execution-specific tasks here (rather
+    # than pulling an unneeded "main" function into the environment.
+    :
+fi
 
 
 #################
