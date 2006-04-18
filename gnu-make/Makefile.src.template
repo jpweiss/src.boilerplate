@@ -133,54 +133,6 @@ make.libobjsV.mk: $(SRC)
 
 
 #
-# Installation rules.
-
-$(BINDIR):
-	mkdir -p $(BINDIR)
-
-$(LIBDIR):
-	mkdir -p $(LIBDIR)
-
-$(INCDIR):
-	mkdir -p $(INCDIR)
-
-#T# Header Installation Rules.  Remove if unused.
-install_headers: $(INCDIR) install_headers.parts
-
-install_headers.parts: $(HEADERS)
-	if [ -n "$?" ]; then \
-		cp $? $(INCDIR)/; \
-	fi
-
-#T# Example: Alternate version
-##Tinstall_headers.parts: $(call finder,$(SRC_INCLUDEPATH)/)
-#T#	cd $(SRC_INCLUDEPATH); \
-#T#	for targ in $?; do \
-#T# For bash/ksh, use this:
-#T#		targ2=$${src\#$(SRC_INCLUDEPATH)/}; \
-#T# Otherwise, use this:
-#T#		targ2=`echo $${src} | sed 's|^$(SRC_INCLUDEPATH)/||'`; \
-#T#		cp -dP --parents $${targ2} $(INCDIR)/; \
-#T#	done
-
-#T# Installation rules for binaries.  Remove if building a lib.
-install_bin: $(BINDIR) install_bin.parts
-
-install_bin.parts: $(TARG_BINS)
-	if [ -n "$?" ]; then \
-		cp -a $? $(BINDIR)/; \
-	fi
-
-#T# Installation rules for libs.  Remove if building executables.
-install_libs: $(LIBDIR) install_libs.parts
-
-install_libs.parts: $(TARG_LIB).a $(TARG_LIB).so
-	if [ -n "$?" ]; then \
-		cp -a $? $(LIBDIR)/; \
-	fi
-
-
-#
 # Unit-Testing
 #
 
@@ -191,115 +143,45 @@ utest:
 	cd utests; $(MAKE) all
 
 #T# If this *IS* the unit tests subdir, use this:
-run: $(TARG_BINS)
+run_utests: $(TARG_BINS)
 	for b in $(TARG_BINS); do
 		$b
 	done
-
 
 #
 # Profiling
 #
 
+#T# Remove if there's nothing to profile.
 gcov: $(SRC)
 	for f in $?; do \
 		$(GCOV) $(GCOV_OPTS) $$f; \
 	done
 
-
 #
 # Dependencies
 #
-
-define COMPILE_C.d
-set -e; $(CC) $(C_DEPFLAGS) $(CPPFLAGS) -c $< | \
-    sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
-[ -s $@ ] || rm -f $@
-endef
-
-%.d: %.c
-	$(COMPILE_C.d)
-
-%.d: %.C
-	$(COMPILE_C.d)
-
-%.d: %.cc
-	$(COMPILE_C.d)
-
-%.d: %.cpp
-	$(COMPILE_C.d)
+include $(BASEDIR)/make.deprules.mk
 
 #T# Manual Deps
 #T# You should need these very, very rarely.
 #$(SOME_OBJS): $($@:.o=.srcsuf)
 
--include $(CSRC:.c=.d) 
--include $(CXX_SRC_C:.C=.d) $(CXX_SRC_cc:.cc=.d) $(CXX_SRC_cpp:.cpp=.d)
 
-
-#
 # Cleanup
 #
+include $(BASEDIR)/make.tar_n_doc.m
 
-clean:
-	-rm -f $(OBJS) *.bb *.bbg
 
-veryclean: clean
-	cd utests; $(MAKE) clean
-	-rm -f $(TARG_LIB).a  $(TARG_LIB).so $(TARG_BINS)
-	-rm -f $(OTHERSTUFF)
-
-distclean: veryclean
-	-rm -fr $(BINDIR)/* $(LIBDIR)/* $(INCDIR)/* $(SRCDOCDIR)/*
-	find . -name '*.d' -exec rm -v \{\} \;
-
+# Installation rules.
 #
+include $(BASEDIR)/make.installrules.mk
+#T# Remove the above if you're not installing anything, like in unit tests.
+
 # Packaging
 #
-
-$(SRCDOCDIR):
-	mkdir -p $(SRCDOCDIR)
-	ln -s $(SRCDOCDIR) $(DOXYGEN_CFG_TARG_DIR)
-
-doxy: $(SRCDOCDIR)
-	doxygen $(DOXYGEN_CFG)
-
-srcdocs: doxy
-
-tardist: install srcdocs
-	@echo "Creating package $(BASEDIR)/$(TARPKG_NAME).tar.gz"
-	( \
-	cd $(BASEDIR); tarpkg=`pwd`/$(TARPKG_NAME).tar.gz; \
-	chmod -R a-w $(SRCDOCDIR); \
-	cd $(INSTALLROOT); strip $(BINDIR_rel)/*; \
-	cd $(BINDIR); strip *; cd ../; \
-	find $(BINDIR_rel) $(LIBDIR_rel) $(INCDIR_rel) \
-		\( -path "*/scratch*" -o \
-		   -path "*/CVS/*" -o -path "*/.svn/*" \) -prune -o -print \
-        | tar -zcf $${tarpkg} -p --files-from=- ; \
-	chmod -R +w $(SRCDOCDIR); \
-	)
-
-tardist.src: install srcdocs
-	@echo "Creating package $(BASEDIR)/$(TARPKG_NAME)-src.tar.gz"
-	( \
-	chmod -R a-w $(SRCDOCDIR); \
-	strip $(BINDIR)/*; \
-	cd $(BASEDIR); tarpkg=`pwd`/$(TARPKG_NAME)-src.tar.gz; \
-	BASEDIR_rel=`basename $(BASEDIR)`; \
-	cd ../; \
-	find $${BASEDIR_rel} \
-		\( -path "*/scratch*" -o \
-		   -path "*/CVS/*" -o -path "*/.svn/*" \) -prune -o \
-		\( -name '*.h' -o -name '*.C' -o -name '*.cc' -o -name '*.c'\
-			-o -name '*.txt' \
-			-o -name '*akefile' -o -name '*akefile.*' -o -name '*.mk' \
-			-o -name 'README' -o -name 'LICENSE' -o -name 'WARRANTY' \
-			-o -path "*/bin/*" -o -path "*/lib*" \
-			-o -path "*html*" -o -path "*rtf*" \) -print \
-        | tar -zcf $${tarpkg} -p --files-from=- ; \
-	chmod -R +w $(SRCDOCDIR); \
-	)
+include $(BASEDIR)/make.tar_n_doc.mk
+#T# Remove the above if you're not packaging anything.
 
 
 #################
