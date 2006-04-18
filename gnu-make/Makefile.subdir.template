@@ -12,6 +12,14 @@
 # You should have received a copy of the file "LICENSE", containing
 # the License John Weiss originally placed this program under.
 #
+#
+#T#
+#T# This is a Makefile-template.  All comments beginning with "#T#" are
+#T# documentation of the template itself.  You should remove them, along with
+#T# any of the boilerplate they document, as you customize this file.
+#T#
+#
+#
 # RCS $Id$
 ##########
 #
@@ -30,13 +38,17 @@ TARG_SUBDIRS:=
 ##########
 
 
-all: install
+#T# Alternatives:  call "install" or "run"
+all: build_all
+
+build_all: $(TARG_SUBDIRS:%=%.build_all)
 
 install: $(TARG_SUBDIRS:%=%.install)
 
+run: $(TARG_SUBDIRS:%=%.run)
+
 clean: $(TARG_SUBDIRS:%=%.clean)
 
-# Remove the "find" line if this isn't the toplevel Makefile.
 veryclean: $(TARG_SUBDIRS:%=%.veryclean)
 
 gcov: $(TARG_SUBDIRS:%=%.gcov)
@@ -47,13 +59,23 @@ clean_gcov:
 	-find . \( -name '*.gcov' -o  -name '*.gcda' -o  -name '*.gcno' \) \
 		-exec rm -v '{}' ';'
 
+#T# Remove the "find" line if this isn't the toplevel Makefile.
 distclean: $(TARG_SUBDIRS:%=%.veryclean)
 	find . -name '*.d' -exec rm -v \{\}\;
 	-rm bin/*
 	-rm lib/*.a lib/*.so
 
+#T# For binaries & executables
+$(TARG_SUBDIRS:%=%.build_all):
+	cd $(@:%.build_all=%); $(MAKE) build_all
+
+#T# For binaries & executables
 $(TARG_SUBDIRS:%=%.install):
 	cd $(@:%.install=%); $(MAKE) install
+
+#T# For Unit Tests
+$(TARG_SUBDIRS:%=%.run):
+	cd $(@:%.run=%); $(MAKE) run
 
 $(TARG_SUBDIRS:%=%.clean):
 	cd $(@:%.clean=%); $(MAKE) clean

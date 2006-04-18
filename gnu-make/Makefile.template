@@ -12,6 +12,14 @@
 # You should have received a copy of the file "LICENSE", containing
 # the License John Weiss originally placed this program under.
 #
+#
+#T#
+#T# This is a Makefile-template.  All comments beginning with "#T#" are
+#T# documentation of the template itself.  You should remove them, along with
+#T# any of the boilerplate they document, as you customize this file.
+#T#
+#
+#
 # RCS $Id$
 ##########
 #
@@ -77,48 +85,51 @@ finder = $(shell find $(1) \( -path "*/CVS" -prune \) -o \! -type d -print)
 
 all:
 
+#T# Edit accordingly:
+build_all: $(TARG_BINS) $(TARG_LIB).a $(TARG_LIB).so
+
 targ.exe: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
-# GNU Make:
-# One side effect of '=' is that you can do "LIBS= -leveryone $(CUSTLIBS)" 
-# and set CUSTLIBS later on, before calling the linker.  Using a
-# target-specific assignment is one way to do this.
+#T# GNU Make:
+#T# One side effect of '=' is that you can do "LIBS= -leveryone $(CUSTLIBS)"
+#T# and set CUSTLIBS later on, before calling the linker.  Using a
+#T# target-specific assignment is one way to do this.
 targ2.exe: LIBS += -lmylib
 
 targ2.exe: $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
-# GNU Make:
-# Use a special builtin pattern rule.
-# Change: s/OBJS_TARGLIB/OBJS/ when all of the objects are members of the
-# library.
+#T# GNU Make:
+#T# Use a special builtin pattern rule.
+#T# Change: s/OBJS_TARGLIB/OBJS/ when all of the objects are members of the
+#T# library.
 $(TARG_LIB).a: $(TARG_LIB).a($(OBJS_TARGLIB))
-#	ranlib $@ # For non-GNU "ar"
+#	ranlib $@ #T# Uncomment this line if using a non-GNU "ar".
 
 $(TARG_LIB).so: $(OBJS)
 	$(CXX) $(LDFLAGS) -shared -fPIC -o $@ $(OBJS) $(LIBS)
 
-# Multi-targ make example
-# The  "targs : pattern : dep-patern" is a GNU-make special (called "static
-# pattern rules").
+#T# Multi-targ make example
+#T# The  "targs : pattern : dep-patern" is a GNU-make special (called
+#T# "static pattern rules").
 $(TARG_BINS): % : %.o $(TARG_COMMON_OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $@.o $(TARG_COMMON_OBJS) $(LIBS)
 
-# Build a list of objects.  Use this when splitting the *.o in a library
-# across multiple subdirectories.
-# Define these GNU-make Macros:
-#   lastword = $(word $(words $(1)),$(1))
-#   lastdir = $(call lastword,$(subst /, ,$(1)))
+#T# Build a list of objects.  Use this when splitting the *.o in a library
+#T# across multiple subdirectories.
+#T# Define these GNU-make Macros:
+#T#   lastword = $(word $(words $(1)),$(1))
+#T#   lastdir = $(call lastword,$(subst /, ,$(1)))
 make.libobjsV.mk: $(SRC)
 	echo "OBJS_TARGLIB += $(addprefix $(call lastdir,$(CURDIR))/,$(OBJS))" \
 		> make.libobjsV.mk
-# Then add:
-#   OBJS_TARGLIB:=
-#   -include subdir/make.libobjsV.mk
-# ...to the parent Makefile.  You should also add this dependency rule:
-#   subdir/make.libobjsV.mk:
-#	  cd subdir && $(MAKE) make.libobjsV.mk
+#T# Then add:
+#T#   OBJS_TARGLIB:=
+#T#   -include subdir/make.libobjsV.mk
+#T# ...to the parent Makefile.  You should also add this dependency rule:
+#T#   subdir/make.libobjsV.mk:
+#T#	  cd subdir && $(MAKE) make.libobjsV.mk
 
 
 #
@@ -133,6 +144,7 @@ $(LIBDIR):
 $(INCDIR):
 	mkdir -p $(INCDIR)
 
+#T# Header Installation Rules.  Remove if unused.
 install_headers: $(INCDIR) install_headers.parts
 
 install_headers.parts: $(HEADERS)
@@ -140,15 +152,18 @@ install_headers.parts: $(HEADERS)
 		cp $? $(INCDIR)/; \
 	fi
 
-# Example: Alternate version
-#install_headers.parts: $(call finder,$(SRC_INCLUDEPATH)/)
-#	cd $(SRC_INCLUDEPATH); \
-#	for targ in $?; do \
-#bash#		targ2=$${src\#$(SRC_INCLUDEPATH)/}; \
-#		targ2=`echo $${src} | sed 's|^$(SRC_INCLUDEPATH)/||'`; \
-#		cp -dP --parents $${targ2} $(INCDIR)/; \
-#	done
+#T# Example: Alternate version
+##Tinstall_headers.parts: $(call finder,$(SRC_INCLUDEPATH)/)
+#T#	cd $(SRC_INCLUDEPATH); \
+#T#	for targ in $?; do \
+#T# For bash/ksh, use this:
+#T#		targ2=$${src\#$(SRC_INCLUDEPATH)/}; \
+#T# Otherwise, use this:
+#T#		targ2=`echo $${src} | sed 's|^$(SRC_INCLUDEPATH)/||'`; \
+#T#		cp -dP --parents $${targ2} $(INCDIR)/; \
+#T#	done
 
+#T# Installation rules for binaries.  Remove if building a lib.
 install_bin: $(BINDIR) install_bin.parts
 
 install_bin.parts: $(TARG_BINS)
@@ -156,6 +171,7 @@ install_bin.parts: $(TARG_BINS)
 		cp -a $? $(BINDIR)/; \
 	fi
 
+#T# Installation rules for libs.  Remove if building executables.
 install_libs: $(LIBDIR) install_libs.parts
 
 install_libs.parts: $(TARG_LIB).a $(TARG_LIB).so
@@ -200,7 +216,8 @@ endef
 %.d: %.cpp
 	$(COMPILE_C.d)
 
-# Manual Deps
+#T# Manual Deps
+#T# You should need these very, very rarely.
 #$(SOME_OBJS): $($@:.o=.srcsuf)
 
 -include $(CSRC:.c=.d) 
