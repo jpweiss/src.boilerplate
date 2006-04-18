@@ -179,10 +179,23 @@ install_libs.parts: $(TARG_LIB).a $(TARG_LIB).so
 		cp -a $? $(LIBDIR)/; \
 	fi
 
+
+#
+# Unit-Testing
+#
+
+#T# If your unit tests are inside of the source-subdir, use this:
 test: utest
 unit_test: utest
 utest:
 	cd utests; $(MAKE) all
+
+#T# If this *IS* the unit tests subdir, use this:
+run: $(TARG_BINS)
+	for b in $(TARG_BINS); do
+		$b
+	done
+
 
 #
 # Profiling
