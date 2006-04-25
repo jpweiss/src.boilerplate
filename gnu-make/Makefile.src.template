@@ -170,7 +170,7 @@ include $(BASEDIR)/make.deprules.mk
 
 # Cleanup
 #
-include $(BASEDIR)/make.tar_n_doc.m
+include $(BASEDIR)/make.cleanup.mk
 
 
 # Installation rules.
