@@ -144,8 +144,11 @@ utest:
 
 #T# If this *IS* the unit tests subdir, use this:
 run_utests: $(TARG_BINS)
-	for b in $(TARG_BINS); do
-		$b
+	for b in $(TARG_BINS); do \
+		case $$b in \
+			/*) $$b; ;; \
+			*)  ./$$b; ;; \
+		esac; \
 	done
 
 #
