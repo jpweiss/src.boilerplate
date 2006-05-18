@@ -13,8 +13,8 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-static const char* const 
-xFOOx_cc__="RCS $Id$";
+//static const char* const 
+//xFOOx_cc__="RCS $Id$";
 
 
 // Includes
@@ -37,7 +37,7 @@ xFOOx_cc__="RCS $Id$";
     template<typename T1, typename T2, typename T3, typename T4> 
 
 #define CT_M_MyComplexClass \
-    MyComplexClass<T1,T2, T3, T4> 
+    MyComplexClass<T1, T2, T3, T4> 
 
 
 //
