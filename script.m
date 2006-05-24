@@ -26,10 +26,10 @@
 
 
 # Get the script's name from the program name.
-psep_idx = rindex(program_invocation_name, "/");
+psep_idx = rindex (program_invocation_name, "/");
 myPath = "";
 if (psep_idx)
-  myName = substr(program_invocation_name, psep_idx+1);
+  myName = substr (program_invocation_name, psep_idx+1);
   if (psep_idx > 1)
     myPath = program_invocation_name(1:psep_idx-1);
   endif
@@ -38,7 +38,7 @@ else
 endif
 clear psep_idx;
 ##Add its path to the search path.
-if (length(myPath) && !strcmp(myPath, "."))
+if (length (myPath) && !strcmp (myPath, "."))
   LOADPATH = [LOADPATH, ":", myPath, "//"]; # Search its subdirs, too!
 endif
 
@@ -60,12 +60,14 @@ endif
 #############
 
 
-usageMesg = [ myName, " myArgs [Opts....]\n",
-             "\nOptions:\n",
-             "-a:\n",
-             "\tDescr.\n",
-             "\nUsage.\n"
-             ];
+global \
+usageMesg = [ myName, " myArgs [Opts....]\n", \
+             "\nOptions:\n", \
+             "-a:\n", \
+             "\tDescr.\n", \
+             "\nUsage.\n", \
+             "\n\n(This is a usage message.  You can ignore the code ", \
+             " trace below.)" ];
 
 
 #############
@@ -73,6 +75,32 @@ usageMesg = [ myName, " myArgs [Opts....]\n",
 ## Functions
 ##
 #############
+
+
+function [cmdopts] = process_cmdline (g_argv, g_nargin)
+  global usageMesg;
+
+  cmdopts.verbose=0;
+  cmdopts.remaining = cell ();
+
+  ## Edit to suit your needs
+  ## 
+  for i = 1 : g_nargin
+    ## nargin == argc
+    ## list argv ==  cmdline arg
+    ## Use nth(argv, i) to extract args into string variables.  argv(i)
+    ## pulls out a single-element list variable.
+    cur_arg = nth (g_argv, i);
+    if (strcmp (cur_arg, "-h") || strcmp(cur_arg, "--help"))
+      usage (usageMesg);
+    elseif (strcmp(cur_arg, "-v") || strcmp(cur_arg, "--verbose"))
+      cmdopts.verbose = 1;
+    else
+      ## Process this as a non-option arg.
+      cmdopts.remaining = [cmdopts.remaining; cellstr(cur_arg)];
+    endif
+  endfor
+endfunction
 
 
 function retval = bar (x, y, z)
@@ -103,7 +131,7 @@ endfunction
 
 
 ## Stop if this file was sourced
-if (strcmp(myName, "octave"))
+if (strcmp (myName, "octave"))
   return;
 endif
 
@@ -113,10 +141,8 @@ if (nargin < 1)
   usage (usageMesg);
 endif
 
-## nargin == argc
-## list argv ==  cmdline arg
-## Use nth(argv, i) to extract args into string variables.  argv(i)
-## pulls out a single-element list variable.
+
+opts = process_cmdline (argv, nargin);
 
 
 #############
