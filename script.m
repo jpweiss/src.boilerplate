@@ -85,12 +85,18 @@ function [cmdopts] = process_cmdline (g_argv, g_nargin)
 
   ## Edit to suit your needs
   ## 
+  opt_val = "";
   for i = 1 : g_nargin
+    cur_arg = nth (g_argv, i);
+    if (!strcmp (opt_val, "") || strcmp (opt_val, cur_arg))
+      opt_val = "";
+      continue;
+    endif
+
     ## nargin == argc
     ## list argv ==  cmdline arg
-    ## Use nth(argv, i) to extract args into string variables.  argv(i)
+    ## Use nth (argv, i) to extract args into string variables.  argv (i)
     ## pulls out a single-element list variable.
-    cur_arg = nth (g_argv, i);
     if (strcmp (cur_arg, "-h") || strcmp(cur_arg, "--help"))
       usage (usageMesg);
     elseif (strcmp(cur_arg, "-v") || strcmp(cur_arg, "--verbose"))
