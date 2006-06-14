@@ -15,6 +15,8 @@
 //
 //static const char* const 
 //xFOOx_cc__="RCS $Id$";
+#ifndef _xFOOx_TCC_
+#define _xFOOx_TCC_
 
 
 // Includes
@@ -26,6 +28,11 @@
 
 // "using" Decl. for parent namespace not needed; this file is #include'd into
 // that namespace.
+//------- Remove the following if you are #include'ing this file into the
+//------- header proper.
+// Wrapper for parent namespace
+namespace jpw_yFOOy {
+
 
 // Other "using" Decls.
 //using std::string;
@@ -73,6 +80,14 @@ CT_M_MyComplexClass::z()
 }
 
 
+//------- Remove the following if you are #include'ing this file into the
+//------- header proper.
+// End namespace wrapper decls.
+}; //end namespace jpw_yFOOy
+
+
+
+#endif //_matrix_facade_TCC_
 /////////////////////////
 //
 // End
