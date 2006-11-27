@@ -248,18 +248,23 @@ sub process_options($\%@) {
 
 
 sub main {
-    # my $optvars go here.
+    # my $optvars
+    # ...go here, along with their defaults, if any.
+
     my %optmap=(#'optvar' => \$optvar,
                 # Keep the variables and cannonical options the same.
                 );
     my @optspec=(# Reminders:
-                 # . "=i" => integer arg required.
-                 # . "=s" => string arg required.
+                 # elt . "=i" => integer arg required.
+                 # elt . "=s" => string arg required.
+                 # Each ''elt'' is a '|'-separated list of option aliases,
+                 # starting with the cannonical one.
                  );
 
     # Document the options.
     usage_builder(@optspec, %optmap,
                   # Options with predefined defaults get listed here:
+                  # (the cannonical name, not the default value).
                   # 'eg_1', 'eg_2'
                   );
 
