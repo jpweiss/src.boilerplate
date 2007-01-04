@@ -1,6 +1,6 @@
 #!/usr/bin/octave -qf
 ##
-## Copyright (C) 2006 by John P. Weiss
+## Copyright (C) 2006-2007 by John P. Weiss
 ##
 ## This package is free software; you can redistribute it and/or modify
 ## it under the terms of the Artistic License, included as the file
@@ -25,21 +25,20 @@
 #############
 
 
-# Get the script's name from the program name.
-psep_idx = rindex (program_invocation_name, "/");
+## Get the script's name from the program name.
+myName = program_invocation_name ();
+psep_idx = rindex (myName, "/");
 myPath = "";
 if (psep_idx)
-  myName = substr (program_invocation_name, psep_idx+1);
   if (psep_idx > 1)
-    myPath = program_invocation_name(1:psep_idx-1);
+    myPath = myName(1:psep_idx-1);
   endif
-else
-  myName = program_invocation_name;
+  myName = substr (myName, psep_idx+1);
 endif
 clear psep_idx;
 ##Add its path to the search path.
 if (length (myPath) && !strcmp (myPath, "."))
-  LOADPATH = [LOADPATH, ":", myPath, "//"]; # Search its subdirs, too!
+  addpath (genpath (myPath));
 endif
 
 
