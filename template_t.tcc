@@ -62,7 +62,7 @@ namespace jpw_yFOOy {
 /////////////////////////
 
 //
-// xFOOx Member Methods
+// xFOOx Member Functions
 //
 
 

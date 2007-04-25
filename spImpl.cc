@@ -90,7 +90,7 @@ struct xFOOx::xFOOx_Impl : private boost::noncopyable
 /////////////////////////
 
 //
-// xFOOx_Impl Member Methods
+// xFOOx_Impl Member Functions
 //
 
 
@@ -102,7 +102,7 @@ void xFOOx::xFOOx_Impl::y()
 /////////////////////////
 
 //
-// xFOOx Member Methods
+// xFOOx Member Functions
 //
 
 

@@ -48,7 +48,7 @@ using namespace jpwTools;
 /////////////////////////
 
 //
-// xFOOx Member Methods
+// xFOOx Member Functions
 //
 
 

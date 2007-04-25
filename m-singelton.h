@@ -44,7 +44,7 @@ namespace jpwTools {
  * <Document it here>
  *
  * This is a so-called "Meyers Singleton," after Scott Meyers.  It keeps its
- * lone static instance inside of the accessor method.  It's best used when
+ * lone static instance inside of the accessor function.  It's best used when
  * the Singleton object is very simple and/or has simple constructor needs.
  * It's \b not reentrant and should \em never be used in threaded code.
  *

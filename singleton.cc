@@ -51,7 +51,7 @@ xFOOx* xFOOx::m__TheInstance_p(0);
 /////////////////////////
 
 //
-// xFOOx Member Methods
+// xFOOx Member Functions
 //
 
 
