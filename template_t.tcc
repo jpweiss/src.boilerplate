@@ -87,7 +87,7 @@ CT_M_MyComplexClass::z()
 
 
 
-#endif //_matrix_facade_TCC_
+#endif //_xFOOx_TCC_
 /////////////////////////
 //
 // End
