@@ -45,12 +45,14 @@
 clean:
 	-rm -f $(OBJS) *.bb *.bbg
 
+clean_targs:
+	-rm -f $(TARG_LIB).a  $(TARG_LIB).so $(TARG_BINS)
+
 gprofclean:
 	-rm -f *.gc*
 
-veryclean: clean gprofclean
+veryclean: clean clean_targs gprofclean
 	cd utests; $(MAKE) clean gprofclean
-	-rm -f $(TARG_LIB).a  $(TARG_LIB).so $(TARG_BINS)
 #T#	-rm -f $(OTHERSTUFF)
 
 depclean: 

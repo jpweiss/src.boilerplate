@@ -74,6 +74,8 @@ include $(BASEDIR)/make.autogenV.mk
 
 all:
 
+relink: clean_targs $(TARG_BINS) $(TARG_LIB)
+
 targ.exe: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
@@ -194,9 +196,11 @@ $(CXX_SRC_cpp:.cpp=.d): $($@:.d=.cpp)
 clean:
 	-rm -f $(OBJS) *.d
 
-veryclean: clean
-	(cd utests; make clean)
+clean_targs:
 	-rm -f $(TARG_LIB).a  $(TARG_LIB).so $(TARG_BINS)
+
+veryclean: clean clean_targs
+	(cd utests; make clean)
 	-rm -f $(OTHERSTUFF)
 
 #

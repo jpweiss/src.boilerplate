@@ -41,9 +41,13 @@ TARG_SUBDIRS:=
 #T# Alternatives:  call "install" or "run"
 all: build_all
 
+relink: $(TARG_SUBDIRS:%=%.relink_all)
+
 build_all: $(TARG_SUBDIRS:%=%.build_all)
 
 install: $(TARG_SUBDIRS:%=%.install)
+
+reinstall: relink install
 
 run: $(TARG_SUBDIRS:%=%.run)
 
@@ -68,6 +72,10 @@ distclean: $(TARG_SUBDIRS:%=%.veryclean)
 #T# For binaries & executables
 $(TARG_SUBDIRS:%=%.build_all):
 	cd $(@:%.build_all=%); $(MAKE) build_all
+
+#T# For binaries & executables
+$(TARG_SUBDIRS:%=%.relink_all):
+	cd $(@:%.relink_all=%); $(MAKE) relink
 
 #T# For binaries & executables
 $(TARG_SUBDIRS:%=%.install):

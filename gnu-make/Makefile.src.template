@@ -85,6 +85,8 @@ finder = $(shell find $(1) \( -path "*/CVS" -prune \) -o \! -type d -print)
 
 all:
 
+relink: clean_targs build_all
+
 #T# Edit accordingly:
 build_all: $(TARG_BINS) $(TARG_LIB).a $(TARG_LIB).so
 
