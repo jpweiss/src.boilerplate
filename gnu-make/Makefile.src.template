@@ -83,7 +83,7 @@ finder = $(shell find $(1) \( -path "*/CVS" -prune \) -o \! -type d -print)
 ##########
 
 
-all:
+all: build_all
 
 relink: clean_targs build_all
 
