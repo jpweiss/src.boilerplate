@@ -52,6 +52,11 @@ TARG_COMMON_OBJS:=
 # Standalone Headers or C headers.
 HEADERS:=
 
+# Standalone C++ Headers/Template Source.
+# Should live under "details" subdir.  Will be installed under
+# $(INCDIR)/details, with relative path preserved.
+HEADER_DETAILS:=
+
 # C files
 CSRC:=
 
@@ -182,6 +187,13 @@ include $(BASEDIR)/make.cleanup.mk
 #
 include $(BASEDIR)/make.installrules.mk
 #T# Remove the above if you're not installing anything, like in unit tests.
+
+#T# Customize accordingly, or remove if not installing anything.
+#T# In place of ''install_libs'', you can also use one of the following:
+#T#     * install_static_libs
+#T#     * install_dynamic_libs 
+install: install_libs install_bin install_headers
+
 
 # Packaging
 #

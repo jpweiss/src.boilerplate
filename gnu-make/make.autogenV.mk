@@ -25,6 +25,11 @@
 # Standalone Headers or C headers.
 ##HEADERS:=
 
+# Standalone C++ Headers/Template Source.
+# Should live under "details" subdir.  Will be installed under
+# $(INCDIR)/details, with relative path preserved.
+##HEADER_DETAILS:=
+
 # C files
 ##CSRC:=
 
@@ -68,6 +73,7 @@ CXX_OBJS_cpp:=$(CXX_SRC_cpp:%.cpp=%.o)
 
 # Add C++ objs to list of all objs.
 OBJS += $(CXX_OBJS_C) $(CXX_OBJS_cc) $(CXX_OBJS_cpp)
+HEADER_INSTALLABLES:=$(HEADERS) $(HEADER_DETAILS:%=details/%)
 
 
 #################

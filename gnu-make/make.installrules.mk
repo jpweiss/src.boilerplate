@@ -26,8 +26,8 @@
 #   LIBDIR
 #   INCDIR
 
-# List of C/C++ headers
-#   HEADERS
+# List of C/C++ headers to "install" by symlink
+#   HEADER_INSTALLABLES
 
 # Target library
 #   TARG_LIB
@@ -51,11 +51,11 @@ $(INCDIR):
 	mkdir -p $(INCDIR)
 
 # Header Installation Rules.
-install_headers: $(INCDIR) install_headers.parts
+install_headers: $(INCDIR) install_headers.symlink
 
-install_headers.parts: $(HEADERS)
+install_headers.copy: $(HEADER_INSTALLABLES)
 	if [ -n "$?" ]; then \
-		cp $? $(INCDIR)/; \
+		cp -dP --parents $? $(INCDIR)/; \
 	fi
 
 #T# Example: Alternate version
@@ -69,7 +69,17 @@ install_headers.parts: $(HEADERS)
 #T#		cp -dP --parents $${targ2} $(INCDIR)/; \
 #T#	done
 
-# Installation rules for binaries.  Remove if building a lib.
+install_headers.symlink: $(HEADER_INSTALLABLES)
+	for targ in $?; do \
+		link=$(INCDIR)/$${targ#/}; \
+		linkPath=`dirname $${link}`; \
+		if [ ! -d $${linkPath} ]; then \
+			mkdir -p $${linkPath} || break; \
+		fi; \
+		ln -s $${PWD}/$${targ} $${link} || break; \
+	done
+
+# Installation rules for binaries.
 install_bin: $(BINDIR) install_bin.parts
 
 install_bin.parts: $(TARG_BINS)
@@ -77,13 +87,22 @@ install_bin.parts: $(TARG_BINS)
 		cp -a $? $(BINDIR)/; \
 	fi
 
-# Installation rules for libs.  Remove if building executables.
-install_libs: $(LIBDIR) install_libs.parts
-
-install_libs.parts: $(TARG_LIB).a $(TARG_LIB).so
+# Installation rules for libs.
+install_libs.parts.static: $(TARG_LIB).a
 	if [ -n "$?" ]; then \
 		cp -a $? $(LIBDIR)/; \
 	fi
+
+install_libs.parts.dynamic: $(TARG_LIB).so
+	if [ -n "$?" ]; then \
+		cp -a $? $(LIBDIR)/; \
+	fi
+
+install_static_libs: $(LIBDIR) install_libs.parts.static
+
+install_dynamic_libs: $(LIBDIR) install_libs.parts.dynamic
+
+install_libs: install_static_libs install_dynamic_libs
 
 
 #################
