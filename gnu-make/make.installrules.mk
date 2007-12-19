@@ -54,7 +54,8 @@ $(INCDIR):
 install_headers: $(INCDIR) install_headers.symlink
 
 install_headers.copy: $(HEADER_INSTALLABLES)
-	if [ -n "$?" ]; then \
+	@echo "Installing headers from \"${PWD}\""
+	@if [ -n "$?" ]; then \
 		cp -dP --parents $? $(INCDIR)/; \
 	fi
 
@@ -70,31 +71,42 @@ install_headers.copy: $(HEADER_INSTALLABLES)
 #T#	done
 
 install_headers.symlink: $(HEADER_INSTALLABLES)
-	for targ in $?; do \
+	@echo "Installing headers from \"${PWD}\" (via symlink)"
+	@for targ in $?; do \
 		link=$(INCDIR)/$${targ#/}; \
 		linkPath=`dirname $${link}`; \
 		if [ ! -d $${linkPath} ]; then \
 			mkdir -p $${linkPath} || break; \
 		fi; \
-		ln -s $${PWD}/$${targ} $${link} || break; \
+		if [ ! -L $${link} ]; then \
+			ln -s $${PWD}/$${targ} $${link} || break; \
+		fi; \
 	done
+
+#T# Note:
+#T# The ''if [ ! -L $${link} ];'' will only work with bash/ksh.  If using the
+#T# old, creaky, Bourne Shell, replace the ''-L'' with a ''-r''.
+
 
 # Installation rules for binaries.
 install_bin: $(BINDIR) install_bin.parts
 
 install_bin.parts: $(TARG_BINS)
-	if [ -n "$?" ]; then \
+	@echo "Installing binaries from \"${PWD}\""
+	@if [ -n "$?" ]; then \
 		cp -a $? $(BINDIR)/; \
 	fi
 
 # Installation rules for libs.
 install_libs.parts.static: $(TARG_LIB).a
-	if [ -n "$?" ]; then \
+	@echo "Installing static libraries  from \"${PWD}\""
+	@if [ -n "$?" ]; then \
 		cp -a $? $(LIBDIR)/; \
 	fi
 
 install_libs.parts.dynamic: $(TARG_LIB).so
-	if [ -n "$?" ]; then \
+	@echo "Installing dynamic-link libraries  from \"${PWD}\""
+	@if [ -n "$?" ]; then \
 		cp -a $? $(LIBDIR)/; \
 	fi
 
