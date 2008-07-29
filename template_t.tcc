@@ -52,6 +52,13 @@ namespace jpw_yFOOy {
 // 
 
 
+#if 0
+ // This is just an example of how to define static member variables.
+ template<class C> example_t xFOOx<C>::staticVar(initializer);
+ TEMPL_M_MyComplexClass example_t CT_M_MyComplexClass::otherStaticVar(0);
+#endif
+
+
 /////////////////////////
 
 //
