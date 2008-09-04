@@ -88,12 +88,13 @@ sub usage_builder(\@;\%@);
 #
 
 sub usage {
-    my @documented_opts = ("help", "verbose",
-                           # Others...
-                           );
+    my %documented_opts = ("help"=>1, "verbose"=>1, "man"=>1);
+    my @documented_variants = ("help|h", "verbose|v", "man",
+                               # Others...
+                              );
 
     # Add to the global %usg_* maps:
-    usage_builder(@documented_opts);
+    usage_builder(@documented_variants, %documented_opts);
 
     # The Usage Proper.
 
@@ -108,9 +109,19 @@ sub usage {
     $usg_OptNames{"verbose"}:
         Makes $_MyName noiser about what it\'s doing.
         $usg_DefaultVals{"verbose"}
+    $usg_OptNames{"man"}:
+        Print out the internal manual.  Read it for full details of how to use
+        $_MyName.
     $usg_OptNames{"otheropts"}:
         Boilerplate for documenting other opts.
         $usg_DefaultVals{"otheropts"}
+
+    Parameters:
+
+    <Describe further.>
+
+Rerun using the "--man" option for a full description of the Options and
+Parameters that $_MyName uses.
 EOF
     1;
     exit 1;
@@ -191,6 +202,8 @@ sub process_options($\%@) {
     $ref_optmap->{'verbose'} = \$_Verbose;
     # Append a '+' for multiple verbosity levels
     push(@valid_opts, "verbose|v");
+    $ref_optmap->{'man'} = 0;
+    push(@valid_opts, "man");
     $ref_optmap->{'unit_test'} = \$_UnitTest;
     push(@valid_opts, "unit_test|unitTest");
 
@@ -217,7 +230,7 @@ sub process_options($\%@) {
 
     # Let's have a looksie at the options before proceeding.
     if ($_UnitTest) {
-        print_hash "optmap", %$ref_optmap;
+#        print_hash "optmap", %$ref_optmap;
     }
 
     # Special Unit Testing Options.  They run their appointed tests, then
@@ -227,6 +240,12 @@ sub process_options($\%@) {
         # Do unit testing here.
         1;
     } #end if(unit test)
+
+    # Just check and see "--man" was there.  Otherwise, we have to wait
+    # until we read & merge in the configfile before validating anything.
+    if ($ref_optmap->{"man"}) {
+        exec "perldoc", "-F", "$0";
+    }
 
     # Additional processing goes here
     # :
@@ -275,7 +294,49 @@ sub main {
 
 main;
 exit 0;
+## POD STARTS HERE ##
+__END__
+
+=head1 NAME
+
+>>xMYNAMEx<< - >>xMYDESCRx<<
+
+=head1 SYNOPSIS
+
+=over 0
+
+=item >>xMYNAMEx<< I<Options> {I<Param>} [{I<Param>} ...]
+
+=back
+
+=head1 DESCRIPTION
+
+<General description goes here.>
+
+=head1 Commandline Options
+
+=over 2
+
+=item --option-in-cannonical-form I<any_args>
+
+Description Goes Here.
+
+=back
+
+=head1 Positional Parameters
+
+=over 2
+
+=item * I<item_name>
+
+Description Goes Here.
+
+=back
+
+=cut
+
 
 #################
-#
-#  End
+# Local Variables:
+# coding: utf-8-unix
+# End:
