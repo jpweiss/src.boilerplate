@@ -4,7 +4,7 @@
 # variables are then used later by special targets in the Makefile.template.
 # 
 #
-# Copyright (C) 2008 by John P. Weiss
+# Copyright (C) 2009 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file

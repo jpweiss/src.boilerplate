@@ -3,7 +3,7 @@
 # Special GNU-make file for cleanup rules.
 # 
 #
-# Copyright (C) 2008 by John P. Weiss
+# Copyright (C) 2009 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file
