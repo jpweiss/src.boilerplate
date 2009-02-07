@@ -100,13 +100,13 @@ install_bin.parts: $(TARG_BINS)
 # Installation rules for libs.
 install_libs.parts.static: $(TARG_LIB).a
 	@echo "Installing static libraries  from \"${PWD}\""
-	@if [ -n "$?" ]; then \
+	@if [ -n "$(TARG_LIB)" ]; then \
 		cp -a $? $(LIBDIR)/; \
 	fi
 
 install_libs.parts.dynamic: $(TARG_LIB).so
 	@echo "Installing dynamic-link libraries  from \"${PWD}\""
-	@if [ -n "$?" ]; then \
+	@if [ -n "$(TARG_LIB)" ]; then \
 		cp -a $? $(LIBDIR)/; \
 	fi
 
