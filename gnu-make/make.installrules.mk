@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 #
 # Special GNU-make file of installation rules.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #

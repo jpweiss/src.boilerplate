@@ -39,10 +39,10 @@ function [a, b, c] = xFOOx (arg1, arg2)
   ## returned if the return variable is never set.  See the info page
   ## for the (nargout > 1) version of this.
   ## return: takes no args.  Just returns from the function.
-  ## 
+  ##
   ## Omit ';' to have the result of that line print out when the
   ## function is called.
-  ## 
+  ##
   ## all_va_args: used to pass all of the optional args onward to another
   ## function.
 endfunction

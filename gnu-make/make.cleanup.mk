@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 #
 # Special GNU-make file for cleanup rules.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #
@@ -55,7 +55,7 @@ veryclean: clean clean_targs gprofclean
 	cd utests; $(MAKE) clean gprofclean
 #T#	-rm -f $(OTHERSTUFF)
 
-depclean: 
+depclean:
 	find . -name '*.d' -exec rm -v \{\} \;
 
 distclean_toplevel: veryclean depclean

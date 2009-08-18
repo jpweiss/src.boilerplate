@@ -62,7 +62,7 @@ namespace eval Foo {
     # Note:
     # Tcl won't auto-load when a package variable is accessed, only on calls
     # to package proc's.  The 3 lines below are a workaround:
-    # 
+    #
     ## Kludge for forcing loading of the Foo package here, if it
     ## hasn't been loaded already.  This is a TCL flaw.
     #eval $::auto_index(::Foo::anyExportedProcNameHere)
@@ -133,8 +133,8 @@ proc getOpts { optarray_nm posnParams_nm argv args } {
     } ;# end foreach argv
 
     # Reduce degenerate parameter names down to the cannonical one.
-    if { ! [array exists opt_regexps]} { 
-        return 
+    if { ! [array exists opt_regexps]} {
+        return
     }
 
     # Only works in TCL > v8.1:
@@ -191,9 +191,9 @@ proc parseOptions { optarray_nm argv } {
     # Simple, standalone separation of flags from positional-parameters.
     getOpts options__u posnParams $argv optNames
 
-    # 
+    #
     # Option Validation and Processing
-    # 
+    #
 
     if [info exists options__u(help)] {
         usage
@@ -207,7 +207,7 @@ proc parseOptions { optarray_nm argv } {
 
     # :
     # :
-    # Any other option processing goes here.  (You can remove this comment.) 
+    # Any other option processing goes here.  (You can remove this comment.)
     # :
     # :
 
@@ -250,7 +250,7 @@ proc Main { argc argv } {
     set params [ parseOptions options $argv ]
 
     if {$::VERBOSE && $::UNIT_TEST} {
-        parray options 
+        parray options
         puts $params
     }
 
@@ -274,7 +274,7 @@ proc Main { argc argv } {
     #    ... $myarray([join [list $x $y $z] ")("]) ...
     # or worse:
     #    ... $myarray($x\)\($y\)\($z) ...
-    #    
+    #
     # However, you're better off using an index-separator that Tcl won't parse:
     #    set myarray($x,$y) $val
     #    ... $myarray($x,$y) ...

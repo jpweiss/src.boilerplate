@@ -1,4 +1,4 @@
-#!/usr/bin/perl 
+#!/usr/bin/perl
 #
 # Copyright (C) 2009 by John P. Weiss
 #

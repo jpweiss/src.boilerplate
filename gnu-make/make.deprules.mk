@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 #
 # Special GNU-make file with the dependency-building and reading rules.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #
@@ -52,7 +52,7 @@ endef
 %.d: %.cpp
 	$(COMPILE_C.d)
 
--include $(CSRC:.c=.d) 
+-include $(CSRC:.c=.d)
 -include $(CXX_SRC_C:.C=.d) $(CXX_SRC_cc:.cc=.d) $(CXX_SRC_cpp:.cpp=.d)
 
 

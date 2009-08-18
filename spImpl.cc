@@ -1,6 +1,6 @@
 // -*- C++ -*-
 // Implementation of class xFOOx
-// 
+//
 // Copyright (C) 2009 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
@@ -13,7 +13,7 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-static const char* const 
+static const char* const
 xFOOx_cc__="RCS $Id$";
 
 
@@ -28,12 +28,12 @@ using namespace jpwTools;
 
 //
 // Static variables
-// 
+//
 
 
 //
 // Typedefs
-// 
+//
 
 
 /////////////////////////
@@ -126,7 +126,7 @@ void xFOOx::xFOOx(const xFOOx& other)
 xFOOx& xFOOx::operator=(const xFOOx& other)
 {
     // We must create a copy of the implementation object in "other".  We
-    // don't want to copy the 
+    // don't want to copy the
     m__spImpl.reset(new xFOOx_Impl(*other.m__spImpl));
     return *this;
 }

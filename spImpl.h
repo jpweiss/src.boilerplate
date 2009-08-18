@@ -1,6 +1,6 @@
 // -*- C++ -*-
 // Header file for class xFOOx
-// 
+//
 // Copyright (C) 2009 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
@@ -30,7 +30,7 @@
 
 
 // Enclosing namespace
-// 
+//
 namespace jpwTools {
 //using std::string;
 

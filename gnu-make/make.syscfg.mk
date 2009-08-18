@@ -1,8 +1,8 @@
 # -*- Makefile -*-
-# 
+#
 # Variables that are compiler- and architecture-specific.  This includes any
 # optimization flags, since these usually differ from platform to platform.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #
@@ -32,7 +32,7 @@ ARCH:=i586
 
 
 # General architecture-specific compiler flags.
-ARCHFLAGS:= # -m128bit-long-double 
+ARCHFLAGS:= # -m128bit-long-double
 # Others, possibly set by "-march" or "-mcpu":
 # -m3dnow -mmmx
 
@@ -59,7 +59,7 @@ GCOV:=gcov
 GCOV_OPTS:=
 
 # GNU-make special:  These next two variables are part of every implicit
-# command. 
+# command.
 TARGET_ARCH:=-mcpu=$(ARCH) -march=$(ARCH)
 TARGET_MACH:=$(TARGET_ARCH)
 
@@ -82,7 +82,7 @@ F_LIBS:=-lg2c #g77
 OPTIMIZE:=#-O3 -funroll-loops -fmerge-constants
 # Flags for faster math.  Place after the "-O".
 #     -mieee-fp -malign-double -mwide-multiply $(ARCHFLAGS)
-# 
+#
 # Agressive Inlining:
 #     -finline-functions -finline-limit=N #Default==600
 # Some other useful optimizations:
@@ -98,12 +98,12 @@ PROFILE:=$(GPROF_GCC) $(GCOV_GCC)
 
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
-CFLAGS += $(ARCHFLAGS) 
-##FFLAGS += $(ARCHFLAGS) 
+CFLAGS += $(ARCHFLAGS)
+##FFLAGS += $(ARCHFLAGS)
 
 #
 # Warnings (Per-Language)
-# 
+#
 
 CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 # What this does:
@@ -127,7 +127,7 @@ CXXFLAGS += -felide-constructors \
 #     -felide-constructors:  Snip out temporaries created by the compiler
 #                            (like in return values to the RHS of op=(), etc.)
 #                            On by default in the present g++, but let's just
-#                            make sure... 
+#                            make sure...
 # Other g++ flags:
 #     -Wno-deprecated:  Disable warnings about older, non-std-compliant
 #                       G++-ism.
@@ -136,7 +136,7 @@ CXXFLAGS += -felide-constructors \
 
 #
 # Other Per-Language Options
-# 
+#
 
 # Used to generate the *.d  dependency files (under gcc):
 C_DEPFLAGS:=-MM -MP

@@ -1,6 +1,6 @@
 // -*- Java -*-
 // Implementation of class xFOOx
-// 
+//
 // Copyright (C) 2009 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
@@ -47,10 +47,10 @@ import java.text.*;
  * Use HTML markup for bold/italics/emphasized.  Use <code>code</code> for
  * inlined code samples.
  * <p>
- * 
+ *
  * Here is an example of a link: {@link java.util.Properties Properties}.
- * This references a class member: {@link #myMethod} 
- * 
+ * This references a class member: {@link #myMethod}
+ *
  * @author John Weiss
  * @version 1.0
  */
@@ -88,8 +88,8 @@ public class xFOOx
     //
     //--------------
 
-    static public class MyException extends Exception 
-    { 
+    static public class MyException extends Exception
+    {
         MyException(String mesg) { super(mesg); }
     }
 

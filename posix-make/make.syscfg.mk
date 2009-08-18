@@ -5,10 +5,10 @@
 # guaranteed to work AT ALL with other "make" variants.  Someday, it will.
 # Just not today.
 # WARNING WARNING WARNING
-# 
+#
 # Variables that are compiler- and architecture-specific.  This includes any
 # optimization flags, since these usually differ from platform to platform.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #
@@ -36,21 +36,21 @@ ARCH:=i586
 ARCH:=athlon-xp
 
 # General architecture-specific compiler flags.
-ARCHFLAGS:= # -m128bit-long-double 
+ARCHFLAGS:= # -m128bit-long-double
 # Others, possibly set by "-march" or "-mcpu":
 # -m3dnow -mmmx
 
 
 #------
 # Note:
-# 
+#
 # This file uses the following GNU-make features:
 #
 # '='  does not expand any RHS variables until LHS usage.  This is the default
 #      behavior for most "make" variants.
 # ':=' expands RHS variables immediately.
 # '+=' appends, using whatever behavior the LHS was first assigned with.
-# 
+#
 #------
 
 # Use non-expanding defn. for the language flags.  Set them to the special
@@ -78,7 +78,7 @@ CCC += -mcpu=$(ARCH) -march=$(ARCH)
 FC += -mcpu=$(ARCH) -march=$(ARCH)
 
 ## GNU-make special:  These next two variables are part of every implicit
-## command. 
+## command.
 ##TARGET_ARCH:=-mcpu=$(ARCH) -march=$(ARCH)
 ##TARGET_MACH:=$(TARGET_ARCH)
 
@@ -97,7 +97,7 @@ FC += -mcpu=$(ARCH) -march=$(ARCH)
 OPTIMIZE:=#-O3 -funroll-loops -fmerge-constants
 # Flags for faster math.  Place after the "-O".
 #     -mieee-fp -malign-double -mwide-multiply $(ARCHFLAGS)
-# 
+#
 # Agressive Inlining:
 #     -finline-functions -finline-limit=N #Default==600
 
@@ -110,12 +110,12 @@ PROFILE:=$(GPROF) $(GCOV)
 
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
-CFLAGS += $(ARCHFLAGS) 
-##FFLAGS += $(ARCHFLAGS) 
+CFLAGS += $(ARCHFLAGS)
+##FFLAGS += $(ARCHFLAGS)
 
 #
 # Warnings (Per-Language)
-# 
+#
 
 CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 # What this does:
@@ -139,7 +139,7 @@ CXXFLAGS += -felide-constructors \
 #     -felide-constructors:  Snip out temporaries created by the compiler
 #                            (like in return values to the RHS of op=(), etc.)
 #                            On by default in the present G++, but let's just
-#                            make sure... 
+#                            make sure...
 # Other g++ flags:
 #     -Wno-deprecated:  Disable warnings about older, non-std-compliant
 #                       G++-ism.
@@ -148,7 +148,7 @@ CXXFLAGS += -felide-constructors \
 
 #
 # Other Per-Language Options
-# 
+#
 
 # Used to generate the *.d  dependency files (under gcc):
 C_DEPFLAGS:=-MMD -MP

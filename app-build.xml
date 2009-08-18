@@ -3,9 +3,9 @@
      + For sake of example, let "<AppName>" denote the main class of
        your application.
      + All of the applications classes reside in a package named
-       "jpw.progs.<AppName>" 
+       "jpw.progs.<AppName>"
      + Your application is being packaged into a JARfile named
-       "<AppName>.jar". 
+       "<AppName>.jar".
      + In the base directory are the directories:
                "src/"
                "classes/"
@@ -22,19 +22,19 @@
 
     <target name="global_properties">
         <!-- You can set up any variables you want used throughout the
-             script here. --> 
+             script here. -->
         <property name="package.name" value="${ant.project.name}"/>
         <property name="src" value="${basedir}/src"/>
         <property name="dest" value="${basedir}/classes"/>
         <property name="docs" value="${basedir}/apidocs"/>
         <property name="jars" value="${basedir}/jars"/>
-        <property name="main.class" 
+        <property name="main.class"
                   value="jpw.progs.${package.name}.${ant.project.name}"/>
         <property name="pkgjar"
                   value="${basedir}/${ant.project.name}.jar"/>
         <property name="jar.manifest" value="${basedir}/appManifest.mf"/>
         <!-- Per-component property names. -->
-        <property name="proj_src" 
+        <property name="proj_src"
                   value="${src}/jpw/progs/${package.name}"/>
     </target>
 
@@ -56,7 +56,7 @@
         </path>
     </target>
 
-    <target name="compile" 
+    <target name="compile"
             depends="init">
         <!-- Both srcdir and destdir should be package roots. -->
         <mkdir dir="${dest}"/>
@@ -78,13 +78,13 @@
         <replace file="./set-classpath.sh" token="            "/>
     </target>
 
-    <target name="manifest" 
+    <target name="manifest"
             depends="init,compile">
         <!-- Note: The manifest file must not have any blank lines,
              hence the peculiar line wrapping below.  Don't modify the
              "Manifest-Version" line.  If you add anything, make sure
              the final line ends with the "</echo>" tag. -->
-        <echo file="${jar.manifest}" 
+        <echo file="${jar.manifest}"
               append="false"
         >Manifest-Version: 1.0
          Created-By: Ant 1.4.1
@@ -92,11 +92,11 @@
         <replace file="${jar.manifest}" token="         "/>
     </target>
 
-    <target name="jar" 
+    <target name="jar"
             depends="init,compile,manifest">
         <mkdir dir="${jars}"/>
-        <jar compress="true" 
-             jarfile="${pkgjar}" 
+        <jar compress="true"
+             jarfile="${pkgjar}"
              manifest="${jar.manifest}">
             <fileset dir="${dest}">
                 <patternset refid="built.classes"/>
@@ -104,7 +104,7 @@
         </jar>
     </target>
 
-    <target name="deployable" 
+    <target name="deployable"
             depends="init,manifest,jar">
         <property name="staging" value="${basedir}/staging"/>
         <mkdir dir="${staging}"/>
@@ -112,10 +112,10 @@
                dir="${staging}">
             <arg value="-xf"/>
             <srcfile/>
-            <fileset dir="${jars}" 
+            <fileset dir="${jars}"
                      includes="*.jar"/>
         </apply>
-        <jar compress="true" 
+        <jar compress="true"
              jarfile="${pkgjar}"
              update="true"
              manifest="${jar.manifest}"
@@ -146,7 +146,7 @@
     </target>
 
     <target name="clean"
-            depends="init,cleandocs,clean-deployable" 
+            depends="init,cleandocs,clean-deployable"
             description="Clean all build products.">
         <delete>
             <fileset dir="${dest}">

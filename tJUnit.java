@@ -1,6 +1,6 @@
 // -*- Java -*-
 // JUnit Test for class xFOOx
-// 
+//
 // Copyright (C) 2009 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
@@ -40,7 +40,7 @@ import java.text.*;
  * @author <a href="mailto:candide@tloen.vslannet">John Weiss</a>
  * @version 1.0
  */
-public class tJUnit extends TestCase 
+public class tJUnit extends TestCase
 {
     //----------
     //
@@ -72,8 +72,8 @@ public class tJUnit extends TestCase
     //
     //--------------
 
-    static public class MyException extends Exception 
-    { 
+    static public class MyException extends Exception
+    {
         MyException(String mesg) { super(mesg); }
     }
 
@@ -81,7 +81,7 @@ public class tJUnit extends TestCase
     //======================================================================
 
 
-    /** 
+    /**
      * Creates a new <code>tJUnit</code> instance.
      *
      * @param name test name
@@ -97,14 +97,14 @@ public class tJUnit extends TestCase
     public static TestSuite suite()
     {
         TestSuite suite = new TestSuite ();
-        suite.addTest(new tJSFolderWriterStack("tTest"));        
+        suite.addTest(new tJSFolderWriterStack("tTest"));
         return suite;
     }
 
-    /** 
-     * Entry point 
-     */ 
-    public static void main(String[] args) 
+    /**
+     * Entry point
+     */
+    public static void main(String[] args)
     {
         for (int i=0; i < args.length; ++i)
         {

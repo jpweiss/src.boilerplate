@@ -80,7 +80,7 @@ targ.exe: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 # GNU Make:
-# One side effect of '=' is that you can do "LIBS= -leveryone $(CUSTLIBS)" 
+# One side effect of '=' is that you can do "LIBS= -leveryone $(CUSTLIBS)"
 # and set CUSTLIBS later on, before calling the linker.  Using a
 # target-specific assignment is one way to do this.
 targ2.exe: LIBS += -lmylib
@@ -118,7 +118,7 @@ $(LIBDIR):
 $(INCDIR):
 	mkdir $(INCDIR)
 
-install_bin: $(BINDIR) $(LIBDIR) 
+install_bin: $(BINDIR) $(LIBDIR)
 
 install_headers: $(INCDIR)
 
@@ -141,7 +141,7 @@ utest:
 #
 # You can remove this if the whole of the "Dependencies" section below works
 # on your platform.
-# 
+#
 
 #$(COBJS): $($@:.o=.c)
 
@@ -185,7 +185,7 @@ $(CXX_SRC_cpp:.cpp=.d): $($@:.d=.cpp)
 # All of this should come after any variable definitions and before any local
 # rules.
 
--include $(CSRC:.c=.d) 
+-include $(CSRC:.c=.d)
 -include $(CXX_SRC_C:.C=.d) $(CXX_SRC_cc:.cc=.d) $(CXX_SRC_cpp:.cpp=.d)
 
 

@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 #
 # Special GNU-make file for rules to build source docs and tarballs.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #

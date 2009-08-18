@@ -2,7 +2,7 @@
 #
 # Basic variables, like names of directories, flags for header/library
 # locations, installation directories, and the like.
-# 
+#
 #
 # Copyright (C) 2009 by John P. Weiss
 #

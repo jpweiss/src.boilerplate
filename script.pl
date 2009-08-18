@@ -1,4 +1,4 @@
-#!/usr/bin/perl 
+#!/usr/bin/perl
 #
 # Copyright (C) 2009 by John P. Weiss
 #
@@ -151,7 +151,7 @@ sub usage_builder(\@;\%@) {
     my @optname_hasdefl = @_;
 
     # Default vals.
-    # 
+    #
     foreach (@optname_hasdefl) {
         next unless (defined($ref_optmap->{$_}));
         $usg_DefaultVals{$_} = "Default: \"";
@@ -169,7 +169,7 @@ sub usage_builder(\@;\%@) {
     @cannonical_names{keys(%$ref_optmap)} = ();
     foreach (@$ref_valid_opts) {
         my $opt = $_; # This prevents the elements of @valid_opts from being
-                      # modified. 
+                      # modified.
         $opt =~ s/=[^=]+$//;
         my @alts = ();
         my $cannonical='';
@@ -208,7 +208,7 @@ sub process_options($\%@) {
     push(@valid_opts, "unit_test|unitTest");
 
     # Preparse checks.
-    # 
+    #
     #if ($argc < 1) {
     #    usage;
     #}
@@ -234,7 +234,7 @@ sub process_options($\%@) {
     }
 
     # Special Unit Testing Options.  They run their appointed tests, then
-    # exit. 
+    # exit.
     #
     if ($_UnitTest) {
         # Do unit testing here.

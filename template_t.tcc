@@ -1,6 +1,6 @@
 // -*- C++ -*-
 // Implementation of class xFOOx
-// 
+//
 // Copyright (C) 2009 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
@@ -13,7 +13,7 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-//static const char* const 
+//static const char* const
 //xFOOx_cc__="RCS $Id$";
 #ifndef _xFOOx_TCC_
 #define _xFOOx_TCC_
@@ -41,15 +41,15 @@ namespace jpw_yFOOy {
 // Convenience Macros for defining Template member functions.
 //
 #define TEMPL_M_MyComplexClass \
-    template<typename T1, typename T2, typename T3, typename T4> 
+    template<typename T1, typename T2, typename T3, typename T4>
 
 #define CT_M_MyComplexClass \
-    MyComplexClass<T1, T2, T3, T4> 
+    MyComplexClass<T1, T2, T3, T4>
 
 
 //
 // Static variables
-// 
+//
 
 
 #if 0
@@ -74,14 +74,14 @@ namespace jpw_yFOOy {
 
 
 template<class C>
-inline void 
+inline void
 xFOOx<C>::y()
 {
 }
 
 
 TEMPL_M_MyComplexClass
-inline void 
+inline void
 CT_M_MyComplexClass::z()
 {
 }
@@ -107,7 +107,7 @@ CT_M_MyComplexClass::alpha()
 // Example of a member template definition with just the class specialized.
 template<>
 template<typename OUT_TYPE>
-inline void 
+inline void
 xFOOx<complex>::beta<>(OUT_TYPE& T)
 {
 }
@@ -125,7 +125,7 @@ CT_M_MyComplexClass::alpha<string>()
 // both the class and the function template args).
 template<>
 template<>
-inline void 
+inline void
 xFOOx<complex>::beta<string>(string& T)
 {
 }

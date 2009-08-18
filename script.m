@@ -83,7 +83,7 @@ function [cmdopts] = process_cmdline (g_argv, g_nargin)
   cmdopts.remaining = cell ();
 
   ## Edit to suit your needs
-  ## 
+  ##
   opt_val = "";
   for i = 1 : g_nargin
     cur_arg = nth (g_argv, i);
@@ -118,10 +118,10 @@ function retval = bar (x, y, z)
   ## returned if the return variable is never set.  See the info page
   ## for the (nargout > 1) version of this.
   ## return: takes no args.  Just returns from the function.
-  ## 
+  ##
   ## Omit ';' to have the result of that line print out when the
   ## function is called.
-  ## 
+  ##
   ## all_va_args: used to pass all of the optional args onward to another
   ## function.
   retval = x * y ** z;

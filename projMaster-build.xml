@@ -46,7 +46,7 @@
           'dir="${subproj_src}/subP1"'.
        3. If there are any cross-subproject-dependencies, modify the
           target's 'depends' attribute to point to the relevant
-          subproject(s). 
+          subproject(s).
        4. If you want to do something other than build a JAR-file,
           modify the 'target' attribute of the '<ant/>' action.
        5. Add the name of the new target to the list of targets in the
@@ -64,7 +64,7 @@
 
     <target name="global_properties">
         <!-- You can set up any variables you want used throughout the
-             script (and in any subscripts) here. --> 
+             script (and in any subscripts) here. -->
         <property name="src" value="${basedir}/src"/>
         <property name="dest" value="${basedir}/classes"/>
         <property name="docs" value="${basedir}/apidocs"/>
@@ -74,7 +74,7 @@
         <property name="masterjar"
                   value="${jars}/${ant.project.name}.jar"/>
         <!-- Per-component property names. -->
-        <property name="subproj_src" 
+        <property name="subproj_src"
                   value="${src}/jpw/progs/<ProjectName>"/>
     </target>
 
@@ -96,13 +96,13 @@
 
     <!-- All of these subproject targets use 'inheritAll="true"' to
          force use of the global properties we've defined here, in the
-         master buildfile. 
+         master buildfile.
 
          The lone exception is the target "utest", which lives in its
          own directory and builds only standalone classfile apps.
      -->
 
-    <target name="all.sub" 
+    <target name="all.sub"
             depends="subP1,subP2,subP3,subP4"/>
 
     <!-- No need to modify this target. Skip to the targets below. -->
@@ -115,28 +115,28 @@
         </ant>
     </target>
 
-    <target name="subP1" 
+    <target name="subP1"
             depends="global_properties">
         <ant dir="${subproj_src}/subP1"
              inheritAll="true"
              target="jar"/>
     </target>
 
-    <target name="subP2" 
+    <target name="subP2"
             depends="global_properties">
         <ant dir="${subproj_src}/subP2"
              inheritAll="true"
              target="jar"/>
     </target>
 
-    <target name="subP3" 
+    <target name="subP3"
             depends="global_properties">
         <ant dir="${subproj_src}/subP3"
              inheritAll="true"
              target="jar"/>
     </target>
 
-    <target name="subP4" 
+    <target name="subP4"
             depends="global_properties">
         <!-- Here's an example of a subproject that uses an ANT-file
              that isn't named "build.xml". -->
@@ -178,7 +178,7 @@
     </target>
 
     <target name="clean"
-            depends="init,cleandocs" 
+            depends="init,cleandocs"
             description="Clean all build products.">
         <delete>
             <fileset dir="${dest}">

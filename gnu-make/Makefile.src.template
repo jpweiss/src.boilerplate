@@ -191,7 +191,7 @@ include $(BASEDIR)/make.installrules.mk
 #T# Customize accordingly, or remove if not installing anything.
 #T# In place of ''install_libs'', you can also use one of the following:
 #T#     * install_static_libs
-#T#     * install_dynamic_libs 
+#T#     * install_dynamic_libs
 install: install_libs install_bin install_headers
 
 

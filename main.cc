@@ -1,6 +1,6 @@
 // -*- C++ -*-
 // Implementation of: ????
-// 
+//
 // Copyright (C) 2009 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
@@ -13,7 +13,7 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-static const char* const 
+static const char* const
 xFOOx_cc__="RCS $Id$";
 
 
@@ -31,7 +31,7 @@ xFOOx_cc__="RCS $Id$";
 
 //
 // Using Decls.
-// 
+//
 using std::string;
 using std::vector;
 using std::exception;
@@ -43,12 +43,12 @@ using std::flush;
 
 //
 // Static variables
-// 
+//
 
 
 //
 // Typedefs
-// 
+//
 
 
 /////////////////////////
@@ -66,8 +66,8 @@ using std::flush;
 
 
 // This is where all of your main handling should go.
-int cxx_main(const string& myName, 
-             const string& myPath, 
+int cxx_main(const string& myName,
+             const string& myPath,
              const vector<string>& argv)
 {
 }
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     // Split off the name of the executable from its path.
     string myName(argv[0]);
     string::size_type last_pathsep = myName.find_last_of('/');
-    string myPath; 
+    string myPath;
     if(last_pathsep != string::npos) {
         myPath = myName.substr(0, last_pathsep+1);
         myName.erase(0, last_pathsep+1);
