@@ -1,4 +1,4 @@
-## Copyright (C) 2009 by John P. Weiss
+## Copyright (C) 2010 by John P. Weiss
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the Artistic License, included as the file

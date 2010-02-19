@@ -2,7 +2,7 @@
 ;;
 ;; <ShortDescr>
 ;;
-;;  Copyright (C) 2009 John P. Weiss
+;;  Copyright (C) 2010 John P. Weiss
 ;;
 ;;  This package is free software; you can redistribute it and/or modify
 ;;  it under the terms of the Artistic License, included as the file
