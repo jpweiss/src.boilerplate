@@ -170,11 +170,11 @@ sub usage_builder(\@;\%@) {
     foreach (@$ref_valid_opts) {
         my $opt = $_; # This prevents the elements of @valid_opts from being
                       # modified.
-        $opt =~ s/=[^=]+$//;
+        $opt =~ s/(?:=[^=]+|[+!])$//;
         my @alts = ();
         my $cannonical='';
         foreach my $alt (split(/\|/, $opt)) {
-            if (defined($ref_optmap->{$alt})) {
+            if (exists($ref_optmap->{$alt})) {
                 $cannonical = $alt;
                 delete $cannonical_names{$cannonical};
             } else {
