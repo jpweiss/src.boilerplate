@@ -20,6 +20,7 @@ xFOOx_cc__="RCS $Id$";
 // Includes
 //
 #include <iostream>
+#include <fstream> // Required for reading config files.
 #include <string>
 #include <vector>
 #include <exception>
@@ -59,6 +60,11 @@ using std::flush;
 //
 
 
+// NOTE:
+//
+// When using boost::program_options, you need to compile or link using:
+//   '-lboost_program_options-mt'
+// (Check your Boost build to see if you have to remove the '-mt' suffix.)
 class ProgramOptions
 {
     // Internal Member Variables
@@ -67,8 +73,8 @@ class ProgramOptions
     bool m__showHelp;
     bool m__showHelpConfig;
     string m__cfgfile;
-    positional_options_description m__posnParams;
-    options_description m__posnParamOpts;
+    boost::program_options::positional_options_description m__posnParams;
+    boost::program_options::options_description m__posnParamOpts;
     boost::program_options::variables_map m__opts;
     boost::program_options::options_description m__cmdlineOpts;
     boost::program_options::options_description m__hiddenCmdlineOpts;
@@ -91,18 +97,18 @@ public:
     //
     // ...arg in the 'add_options()' call when defining your options.
     //
-    ProgramOptions(const string& programName)
+    ProgramOptions(const string& programName, int lineLength=78)
         : m__progName(programName)
         , m__showHelp(false)
         , m__showHelpConfig(false)
         , m__cfgfile()
         , m__opts()
         , m__posnParams()
-        , m__posnParamOpts("Positional Parameters")
-        , m__cmdlineOpts("Options")
-        , m__hiddenCmdlineOpts("Hidden Options")
-        , m__sharedOpts("Configuration File/Commandline Options")
-        , m__cfgOpts("Configuration File Options")
+        , m__posnParamOpts("Positional Parameters", lineLength)
+        , m__cmdlineOpts("Options", lineLength)
+        , m__hiddenCmdlineOpts("Hidden Options", lineLength)
+        , m__sharedOpts(lineLength)
+        , m__cfgfileOpts("Configuration File Options", lineLength)
     {}
 
     // Complete the body of this function (see below).
@@ -114,7 +120,7 @@ public:
     // Complete the body of this function (see below).
     bool validateParsedOptions() const;
 
-    void operator()(int argc, char* argv[]);
+    void parse(int argc, char* argv[]);
 
     const boost::program_options::variable_value&
     operator[](const string& varName) const
@@ -123,25 +129,30 @@ public:
     }
 
 private:
+    typedef typename boost::program_options::value_semantic
+    b_po_value_semantic_t;
+
     // Add the named positional parameter.
     //
     void addPosnParam(const char* paramName,
                       const char* paramDocstring,
-                      unsigned max_count=1)
+                      int max_count=1)
     {
-        m__posnParams(paramName, max_count);
-        m__posnParamOpts(paramName, paramDocstring);
+        m__posnParams.add(paramName, max_count);
+        m__posnParamOpts.add_options()
+            (paramName, paramDocstring);
     }
 
     // Add the named positional parameter.
     //
     void addPosnParam(const char* paramName,
-                      const value_semantic* value_obj,
+                      const b_po_value_semantic_t* value_obj,
                       const char* paramDocstring,
-                      unsigned max_count=1)
+                      int max_count=1)
     {
-        m__posnParams(paramName, max_count);
-        m__posnParamOpts(paramName, value_obj, paramDocstring);
+        m__posnParams.add(paramName, max_count);
+        m__posnParamOpts.add_options()
+            (paramName, value_obj, paramDocstring);
     }
 };
 
@@ -157,7 +168,7 @@ private:
 // be defined for you.  No need to put them in here.
 void ProgramOptions::defineCommandlineOptions()
 {
-    using boost::program_options;
+    using namespace boost::program_options;
 
     //-----
     // About the Documentation String:
@@ -236,12 +247,12 @@ void ProgramOptions::defineCommandlineOptions()
 //
 void ProgramOptions::defineCfgfileOptions()
 {
-    using boost::program_options;
+    using namespace boost::program_options;
 
     // Define the Configuration File Variables:
 
     /*
-    m__cfgOpts.add_options()
+    m__cfgfileOpts.add_options()
         ("example", "An example")
         ("group1.example",
          "An example of a configfile variable in a group.  You can specify "
@@ -276,7 +287,7 @@ bool ProgramOptions::validateParsedOptions() const
     // Example:  Handle a missing configuration file.
     // Delete or modify as needed.
     if(m__cfgfile.empty()) {
-        throw boost::program_option::invalid_option_value(
+        throw boost::program_options::invalid_option_value(
             "No configuration file specified!  \"--config\" is "
             "a required option.");
     }
@@ -285,16 +296,19 @@ bool ProgramOptions::validateParsedOptions() const
 
 // There's very little to change in this function.
 //
-void ProgramOptions::operator()(int argc, char* argv[])
+void ProgramOptions::parse(int argc, char* argv[])
 {
-    using boost::program_options;
+    using namespace boost::program_options;
 
-    options_description cmdline;
-    options_description cmdline_documented;
-    options_description config;
+    defineCommandlineOptions();
+    defineCfgfileOptions();
+
+    options_description cmdline_descr;
+    options_description cmdline_documented_descr;
+    options_description config_descr;
 
     // Define the default/std. commandline options
-    cmdline_documented.add_options()
+    cmdline_documented_descr.add_options()
         ("help,h", bool_switch(&m__showHelp), "This message.")
         ("verbose,v", value<int>()->default_value(0)->zero_tokens(),
          "Make this program more verbose.")
@@ -302,8 +316,8 @@ void ProgramOptions::operator()(int argc, char* argv[])
          "Configuration file, containing additional options.\n\n")
         ;
 
-    if(!m__cfgOpts().empty()) {
-        cmdline_documented.add_options()
+    if(!m__cfgfileOpts.options().empty()) {
+        cmdline_documented_descr.add_options()
             ("help-config", bool_switch(&m__showHelpConfig),
              "Additional information about the configuration file.")
             ;
@@ -312,36 +326,36 @@ void ProgramOptions::operator()(int argc, char* argv[])
     // Set up the local 'options_description' vars from the members.
 
     // Comandline:
-    cmdline_documented.add(m__cmdlineOpts);
-    if(!m__sharedOpts().empty()) {
-        cmdline_documented.add(m__sharedOpts);
+    cmdline_documented_descr.add(m__cmdlineOpts);
+    if(!m__sharedOpts.options().empty()) {
+        cmdline_documented_descr.add(m__sharedOpts);
     }
-    if(!m__posnParamOpts().empty()) {
-        cmdline_documented.add(m__posnParamOpts);
+    if(!m__posnParamOpts.options().empty()) {
+        cmdline_documented_descr.add(m__posnParamOpts);
     }
 
-    cmdline.add(cmdline);
-    cmdline.add(m__hiddenCmdlineOpts);
+    cmdline_descr.add(cmdline_documented_descr);
+    cmdline_descr.add(m__hiddenCmdlineOpts);
 
     // Config File:
-    if(!m__cfgOpts().empty()) {
-        config.add(m__cfgOpts);
+    if(!m__cfgfileOpts.options().empty()) {
+        config_descr.add(m__cfgfileOpts);
     }
-    if(!m__sharedOpts().empty()) {
-        config.add(m__sharedOpts);
+    if(!m__sharedOpts.options().empty()) {
+        config_descr.add(m__sharedOpts);
     }
 
     // Parse the Commandline:
     command_line_parser theParser(argc, argv);
-    theParser.options(m__cmdlineOpts);
-    if(!m__posnParamOpts().empty()) {
+    theParser.options(cmdline_descr);
+    if(!m__posnParamOpts.options().empty()) {
         theParser.positional(m__posnParams);
     }
     store(theParser.run(), m__opts);
 
     // Read the Config File (if any):
-    if(!config.empty() && !m__cfgfile.empty()) {
-        std::ifstream cfg_ifs(m__cfgfile);
+    if(!config_descr.options().empty() && !m__cfgfile.empty()) {
+        std::ifstream cfg_ifs(m__cfgfile.c_str());
         if(!cfg_ifs) {
             string errmsg("Invalid/unknown configuration file: \"");
             errmsg += m__cfgfile;
@@ -349,7 +363,7 @@ void ProgramOptions::operator()(int argc, char* argv[])
             throw invalid_option_value(errmsg);
         }
         try {
-            store(parse_config_file(cfg_ifs, cfgOpts), m__opts);
+            store(parse_config_file(cfg_ifs, config_descr), m__opts);
             cfg_ifs.close();
         } catch(std::ios_base::failure& ex) {
             string errmsg("Failed to read configuration file: \"");
@@ -360,7 +374,7 @@ void ProgramOptions::operator()(int argc, char* argv[])
             throw invalid_option_value(errmsg);
         }
     }
-    notify(vm);
+    notify(m__opts);
 
     // Print out the help message(s), as needed:
 
@@ -369,7 +383,7 @@ void ProgramOptions::operator()(int argc, char* argv[])
         cout << "usage: " << m__progName
              << " [options] [posn params]"
              << endl << endl
-             << m__cmdlineOpts
+             << cmdline_documented_descr
              << endl;
         exit(0);
     }
@@ -397,7 +411,7 @@ void ProgramOptions::operator()(int argc, char* argv[])
              << "The comment delimiter is '#' and may appear anywhere "
              << "on a line."
              << endl << endl
-             << cfgOpts
+             << config_descr
              << endl;
         exit(0);
     }
@@ -449,14 +463,14 @@ int main(int argc, char* argv[])
 
     // Call cxx_main(), which is where almost all of your code should go.
     try {
-        ProgramOptions processOpts(myName);
-        processOpts(argc, argv);
+        ProgramOptions myOpts(myName);
+        myOpts.parse(argc, argv);
 
-        return cxx_main(myName, myPath, processOpts);
+        return cxx_main(myName, myPath, myOpts);
     } catch(FooException& ex) {
         cerr << "Caught Foo: " << ex.what() << endl;
         return 3;
-    } catch(boost:program_options::error& ex) {
+    } catch(boost::program_options::error& ex) {
         cerr << "Error while parsing program options: " << ex.what()
              << endl << endl
              << "Rerun \"" << myName << " --help\" for usage."
