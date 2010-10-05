@@ -82,8 +82,8 @@ class ProgramOptions
     boost::program_options::options_description m__cfgfileOpts;
 
 public:
-    // ADD HERE:
-    //     Member variables for individually storing program options.
+    // Member variables for individually storing program options.
+    //   ADD HERE:
     /*
     example_type myExample;
      */
@@ -129,8 +129,7 @@ public:
     }
 
 private:
-    typedef typename boost::program_options::value_semantic
-    b_po_value_semantic_t;
+    typedef boost::program_options::value_semantic b_po_value_semantic_t;
 
     // Add the named positional parameter.
     //
