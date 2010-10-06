@@ -21,6 +21,7 @@ xFOOx_cc__="RCS $Id$";
 //
 #include <iostream>
 #include <fstream> // Required for reading config files.
+#include <sstream> // Required by --help-config.
 #include <string>
 #include <vector>
 #include <exception>
@@ -105,10 +106,10 @@ public:
         , m__opts()
         , m__posnParams()
         , m__posnParamOpts("Positional Parameters", lineLength)
-        , m__cmdlineOpts("Options", lineLength)
+        , m__cmdlineOpts(lineLength)
         , m__hiddenCmdlineOpts("Hidden Options", lineLength)
         , m__sharedOpts(lineLength)
-        , m__cfgfileOpts("Configuration File Options", lineLength)
+        , m__cfgfileOpts("Configuration File Variables", lineLength)
     {}
 
     // Complete the body of this function (see below).
@@ -118,7 +119,7 @@ public:
     void defineCfgfileOptions();
 
     // Complete the body of this function (see below).
-    bool validateParsedOptions() const;
+    bool validateParsedOptions();
 
     void parse(int argc, char* argv[]);
 
@@ -156,6 +157,8 @@ private:
 };
 
 
+/////////////////////////
+
 //
 // ProgramOptions Member Functions
 //
@@ -178,9 +181,8 @@ void ProgramOptions::defineCommandlineOptions()
     //   not any wrapped lines.
     // - The '\t' character is always removed.
     // - A '\t' character in the first "line" adds extra indentation to all
-    //   subsequently-wrapped lines.  It must appear near the start of the
-    //   line.  (Usually, you'll put it after the first word or before the
-    //   second.)
+    //   subsequently-wrapped lines.  Its position marks the position of the
+    //   left margin for the wrapped lines.
     //-----
 
     // Define the "Normal" Commandline Parameters:
@@ -281,7 +283,7 @@ void ProgramOptions::defineCfgfileOptions()
 // complicated processing, such as cross-option dependencies, should go in
 // this member function.
 //
-bool ProgramOptions::validateParsedOptions() const
+bool ProgramOptions::validateParsedOptions()
 {
     // Example:  Handle a missing configuration file.
     // Delete or modify as needed.
@@ -303,7 +305,7 @@ void ProgramOptions::parse(int argc, char* argv[])
     defineCfgfileOptions();
 
     options_description cmdline_descr;
-    options_description cmdline_documented_descr;
+    options_description cmdline_documented_descr("Options");
     options_description config_descr;
 
     // Define the default/std. commandline options
@@ -312,9 +314,8 @@ void ProgramOptions::parse(int argc, char* argv[])
         ("verbose,v", value<int>()->default_value(0)->zero_tokens(),
          "Make this program more verbose.")
         ("config", value<string>(&m__cfgfile),
-         "Configuration file, containing additional options.\n\n")
+         "Configuration file, containing additional options.")
         ;
-
     if(!m__cfgfileOpts.options().empty()) {
         cmdline_documented_descr.add_options()
             ("help-config", bool_switch(&m__showHelpConfig),
@@ -353,6 +354,11 @@ void ProgramOptions::parse(int argc, char* argv[])
     store(theParser.run(), m__opts);
 
     // Read the Config File (if any):
+    if(!config_descr.options().empty()) {
+        // Unfortunately, m__cfgfile is still empty at this point.  Calling
+        // notify() fixes that.
+        notify(m__opts);
+    }
     if(!config_descr.options().empty() && !m__cfgfile.empty()) {
         std::ifstream cfg_ifs(m__cfgfile.c_str());
         if(!cfg_ifs) {
@@ -373,6 +379,7 @@ void ProgramOptions::parse(int argc, char* argv[])
             throw invalid_option_value(errmsg);
         }
     }
+
     notify(m__opts);
 
     // Print out the help message(s), as needed:
@@ -392,9 +399,9 @@ void ProgramOptions::parse(int argc, char* argv[])
         cout << m__progName << " - Configuration File:"
              << endl << endl
              << "Settings in the configuration file are of the form:"
-             << endl
+             << endl << endl
              << "    settingName=value"
-             << endl
+             << endl << endl
              << "Multiple settings can be grouped into sections.  "
              << "Each option in a group"
              << endl
@@ -402,16 +409,64 @@ void ProgramOptions::parse(int argc, char* argv[])
              << "the configuration "
              << endl
              << "file as follows:"
-             << endl
+             << endl << endl
              << "    [sectionName]"
              << endl
              << "    settingName=value"
              << endl << endl
              << "The comment delimiter is '#' and may appear anywhere "
              << "on a line."
-             << endl << endl
-             << config_descr
-             << endl;
+             << endl << endl;
+
+        // Unfortunately, boost::program_options doesn't provide a means of
+        // printing out the configuration file variables as anything other
+        // than options.  So, we'll fake it by printing to a stringstream and
+        // editing each line before printing it out.
+        std::stringstream configDoc_sst;
+        configDoc_sst << config_descr << endl;
+        string::size_type unindent(0);
+        while(configDoc_sst) {
+            string line;
+            getline(configDoc_sst, line);
+
+            // Look for lines beginning with an option name.  Ignore any lines
+            // with a margin more than 1/3 of the size of the line.
+            string::size_type leftMargin = line.find_first_not_of(' ');
+            if( (leftMargin == string::npos) ||
+                (leftMargin > line.length()/3) )
+            {
+                leftMargin = 0;
+            }
+
+            if(line.find("--") == leftMargin) {
+                // Erase a leading '--'
+                line[leftMargin] = ' ';
+                line[leftMargin + 1] = ' ';
+                unindent = 2;
+            } else if( (line.find(" [ --") == (leftMargin+2)) &&
+                       (line[leftMargin] == '-') &&
+                       (line[leftMargin+1] != '-') )
+            {
+                // Erase the short option and remove the '['...']' surrounding
+                // the long name.
+                line.replace(leftMargin, 7, 7, ' ');
+                string::size_type bracketPos = line.find(']', leftMargin);
+                if(bracketPos != string::npos) {
+                    line.erase(bracketPos-1, 2);
+                    line.insert(0, 2, ' ');
+                }
+                unindent = 9;
+            } else if(leftMargin = 0) {
+                unindent = 0;
+            }
+
+            // Remove excess indentation, if any.
+            if(unindent && (line.length() > unindent)) {
+                line.erase(0, unindent);
+            }
+
+            cout << line << endl;
+        }
         exit(0);
     }
 
