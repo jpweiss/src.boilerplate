@@ -195,12 +195,6 @@ include $(BASEDIR)/make.installrules.mk
 install: install_libs install_bin install_headers
 
 
-# Packaging
-#
-include $(BASEDIR)/make.tar_n_doc.mk
-#T# Remove the above if you're not packaging anything.
-
-
 #################
 #
 #  End

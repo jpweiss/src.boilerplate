@@ -120,6 +120,18 @@ ebrowse:
 	)
 
 
+# Make sure the unit tests are built after the source.
+utests.all: src.all
+#T# Remove the above if there's no 'utests' subdirectory in the directory
+#T# where this Makefile lives.
+
+
+# Packaging
+#
+include make.tar_n_doc.mk
+#T# Remove the above if this isn't the toplevel Makefile.
+
+
 #################
 #
 #  End
