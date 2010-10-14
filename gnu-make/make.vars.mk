@@ -21,24 +21,30 @@
 ##########
 
 
-# For components, submodules, and other deeply-nested directory structures,
-# use this:
+#T# For components, submodules, and other deeply-nested directory structures,
+#T# use this:
 
-#ifeq ($(origin PARENT_PATH), undefined)
-#PARENT_PATH:=.
-#endif
-#ifeq ($(origin CPPFLAGS_l), undefined)
-#CPPFLAGS_l:=
-#endif
-#ifeq ($(origin LDFLAGS_l), undefined)
-#LDFLAGS_l:=
-#endif
+ifeq ($(origin PARENT_PATH), undefined)
+PARENT_PATH:=.
+endif
+ifeq ($(origin CPPFLAGS_l), undefined)
+CPPFLAGS_l:=
+endif
+ifeq ($(origin LDFLAGS_l), undefined)
+LDFLAGS_l:=
+endif
 #
-#PARENT_PATH:=../$(PARENT_PATH)
-#include $(PARENT_PATH)/make.vars.mk
+PARENT_PATH:=../$(PARENT_PATH)
+include $(PARENT_PATH)/make.vars.mk
 
-#------------------------------------------------------------
-# For the version of this file in $(BASEDIR), use:
+# Now that $BASEDIR is defined, add it to the local flags.
+# This assumes LDFLAGS uses delayed-eval.
+LDFLAGS_l += -L$(BASEDIR)/src
+#T#  Remove the above if this file isn't in a directory containing source.
+
+
+#T#------------------------------------------------------------
+#T# For the version of this file in $(BASEDIR), use:
 ifeq ($(origin PARENT_PATH), undefined)
 BASEDIR:=.
 #gnu-make#BASEDIR:=$(shell pwd)
