@@ -37,10 +37,7 @@ endif
 PARENT_PATH:=../$(PARENT_PATH)
 include $(PARENT_PATH)/make.vars.mk
 
-# Now that $BASEDIR is defined, add it to the local flags.
-# This assumes LDFLAGS uses delayed-eval.
-LDFLAGS_l += -L$(BASEDIR)/src
-#T#  Remove the above if this file isn't in a directory containing source.
+#T# Add any customizations to the CPPFLAGS_l and LDFLAGS_l variables below.
 
 
 #T#------------------------------------------------------------
@@ -81,10 +78,20 @@ INCDIR=$(INSTALLROOT)/$(INCDIR_rel)
 LIBDIR=$(INSTALLROOT)/$(LIBDIR_rel)
 endif
 
+
+
 #
 # Commonly-used GNU-make Macros
 #
-finder = $(shell find $(1) \( -path "*/CVS" -prune \) -o \! -type d -print)
+
+SCM_DIRS:=-path "*/.svn" -o -path "*/CVS"
+finder = $(shell find $(1) \( $(SCM_DIRS) -prune \) -o \! -type d -print)
+lastword = $(word $(words $(1)),$(1))
+lastdir = $(call lastword,$(subst /, ,$(1)))
+
+#
+# Local Customizations
+#
 
 #CPPFLAGS += -I $(BOOST)
 CPPFLAGS += $(CPPFLAGS_l) # Add local flags for later eval.
@@ -92,6 +99,8 @@ CPPFLAGS += -I . -I $(BASEDIR) -I $(INCDIR)
 
 LDFLAGS += $(LDFLAGS_l) # Add local flags for later eval.
 #LDFLAGS += -L$(LIBDIR) -L.
+#T# Uncomment the above to include the library install directory and/or the
+#T# CWD to the library path.
 
 LIBS=
 

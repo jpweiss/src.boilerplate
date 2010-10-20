@@ -30,6 +30,16 @@
 
 TARG_SUBDIRS:=
 
+DOXYGEN_CFG:=
+DOXYGEN_CFG_TARG_DIR:=
+#T# Remove the above if this isn't the toplevel directory.
+#T# Both of these variables are optional.
+
+# Archive basename.
+TARPKG_NAME=
+#T# Remove the above if this isn't the toplevel directory, or if you're not
+#T# supporting tarballing of your source.
+
 
 ##########
 #

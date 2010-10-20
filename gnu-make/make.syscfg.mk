@@ -1,8 +1,8 @@
 # -*- Makefile -*-
-# 
+#
 # Variables that are compiler- and architecture-specific.  This includes any
 # optimization flags, since these usually differ from platform to platform.
-# 
+#
 #
 # Copyright (C) 2010 by John P. Weiss
 #
@@ -25,17 +25,15 @@
 ##########
 
 
-ARCH:=generic
-#ARCH:=pentium4
-#ARCH:=athlon #athlon-4 #athlon-xp #athlon-mp
-#ARCH:=core2
-#ARCH:=athlon64-sse3 #opteron-sse3
+ARCH:=i586
+#ARCH:=k6-2
+#ARCH:=athlon-xp
 #ARCH:=pentium-m
 
 
 # General architecture-specific compiler flags.
-ARCHFLAGS:= # -m128bit-long-double 
-# Others, possibly set by "-march" or "-mtune":
+ARCHFLAGS:= # -m128bit-long-double
+# Others, possibly set by "-march" or "-mcpu":
 # -m3dnow -mmmx
 
 # Use non-expanding defn. for the language flags.  Set them to the special
@@ -56,18 +54,13 @@ CC:=gcc
 CXX:=g++
 CCC:=$(CXX)
 CPP:=cpp
-##FC:=gfortran
+##FC:=g77
 GCOV:=gcov
 GCOV_OPTS:=
 
 # GNU-make special:  These next two variables are part of every implicit
-# command. 
-TARGET_ARCH:=-march=$(ARCH) #-mtune=$(ARCH) <- Redundant
-#							 -march implies & sets -mtune
-ifeq ($(ARCH), generic)
-#    'generic' is not a valid value for -march, but does work with -mtune.
-TARGET_ARCH:=-mtune=$(ARCH)
-endif
+# command.
+TARGET_ARCH:=-mcpu=$(ARCH) -march=$(ARCH)
 TARGET_MACH:=$(TARGET_ARCH)
 
 # Some aliases.
@@ -75,9 +68,8 @@ TARGET_MACH:=$(TARGET_ARCH)
 ##F90=$(FC) -ff90
 
 # Cross-linking libraries
-##F_LIBS:=-lg2c # Linux g77, compat-gcc v3.2
-##F_LIBS:=-lgfortran # Linux gfortran, gcc v4
-##F_LIBS:=-lfortran # Solaris; IRIX
+F_LIBS:=-lg2c #g77
+#F_LIBS:=-lfortran # Solaris; IRIX
 
 
 ##########
@@ -87,30 +79,18 @@ TARGET_MACH:=$(TARGET_ARCH)
 ##########
 
 
-OPTIMIZE:=-O3 -mieee-fp -malign-double \
-	-fexpensive-optimizations -fprefetch-loop-arrays \
-	-funroll-loops -fpeel-loops -funswitch-loops -frerun-loop-opt \
-	-fno-caller-saves
-# Other optimizations:
-#     -mfpmath=sse
-#     -msse2
-#     -msse3  # for -march=core2 only
-#     -maccumulate-outgoing-args
-#     -minline-all-stringops
-#  We'd need to try these out, one by one, and see how they improve
-#  performance.
+OPTIMIZE:=#-O3 -funroll-loops -fmerge-constants
+# Flags for faster math.  Place after the "-O".
+#     -mieee-fp -malign-double -mwide-multiply $(ARCHFLAGS)
+#
 # Agressive Inlining:
-#     -finline-limit=N #Default==600
-#     --param large-function-growth=M #Default 100
-#     --param inline-unit-growth=L #Default 50
+#     -finline-functions -finline-limit=N #Default==600
+# Some other useful optimizations:
+#	-fexpensive-optimizations -fprefetch-loop-arrays \
+#	-funroll-loops -frerun-loop-opt
 
-DEBUG:=-g3 -ggdb3 -DDEBUG
-DISABLE_INLINE:=-fno-inline -fno-default-inline
+DEBUG:=-ggdb3 -DDEBUG
 #Other GCC debugging options: -save-temps -time
-#Those last two return information about the compilation.
-
-# Disable all optimizations for (most) regression-testing.
-REGRESSION:=-O0 $(DISABLE_INLINE)
 
 GPROF_GCC:=-pg
 GCOV_GCC:=-fprofile-arcs -ftest-coverage
@@ -118,12 +98,12 @@ PROFILE:=$(GPROF_GCC) $(GCOV_GCC)
 
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
-CFLAGS += $(ARCHFLAGS) 
-##FFLAGS += $(ARCHFLAGS) 
+CFLAGS += $(ARCHFLAGS)
+##FFLAGS += $(ARCHFLAGS)
 
 #
 # Warnings (Per-Language)
-# 
+#
 
 CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 # What this does:
@@ -147,7 +127,7 @@ CXXFLAGS += -felide-constructors \
 #     -felide-constructors:  Snip out temporaries created by the compiler
 #                            (like in return values to the RHS of op=(), etc.)
 #                            On by default in the present g++, but let's just
-#                            make sure... 
+#                            make sure...
 # Other g++ flags:
 #     -Wno-deprecated:  Disable warnings about older, non-std-compliant
 #                       G++-ism.
@@ -156,7 +136,7 @@ CXXFLAGS += -felide-constructors \
 
 #
 # Other Per-Language Options
-# 
+#
 
 # Used to generate the *.d  dependency files (under gcc):
 C_DEPFLAGS:=-MM -MP
@@ -185,16 +165,10 @@ ARFLAGS=crv
 ##########
 
 
-#DEBUG_FLAGS:=-DDEBUG_GA #-DDEBUG
-#COMPILE_TYPE:=
+COMPILE_TYPE:=
+#COMPILE_TYPE:=$(DEBUG) # $(PROFILE)
 #LDFLAGS += $(PROFILE)
-#COMPILE_TYPE:=$(DEBUG) #$(PROFILE) #$(DEBUG_FLAGS)
-#COMPILE_TYPE:=$(DEBUG) $(DISABLE_INLINE) #$(DEBUG_FLAGS)
-#LDFLAGS += -lefence
-#LDFLAGS += -ldmalloc -ldmallocxx 
-#COMPILE_TYPE:=$(OPTIMIZE)
-#WARNING# Use this for the regression tests:
-COMPILE_TYPE:=$(REGRESSION)
+#COMPILE_TYPE:=$(OPTIMIZE) # $(PROFILE)
 
 
 #################

@@ -38,12 +38,6 @@ include $(BASEDIR)/make.syscfg.mk
 #
 ##########
 
-DOXYGEN_CFG:=
-DOXYGEN_CFG_TARG_DIR:=
-
-# Archive basename.
-TARPKG_NAME=mywhatever
-
 # Executables
 TARG_BINS:=ex why zee
 TARG_LIB:=libmylib
@@ -78,7 +72,7 @@ include $(BASEDIR)/make.autogenV.mk
 # GNU-make Macros; keep those that you need.
 lastword = $(word $(words $(1)),$(1))
 lastdir = $(call lastword,$(subst /, ,$(1)))
-finder = $(shell find $(1) \( -path "*/CVS" -prune \) -o \! -type d -print)
+finder = $(shell find $(1) \( $(SCM_DIRS) -prune \) -o \! -type d -print)
 
 
 ##########
@@ -125,18 +119,19 @@ $(TARG_BINS): % : %.o $(TARG_COMMON_OBJS)
 
 #T# Build a list of objects.  Use this when splitting the *.o in a library
 #T# across multiple subdirectories.
-#T# Define these GNU-make Macros:
-#T#   lastword = $(word $(words $(1)),$(1))
-#T#   lastdir = $(call lastword,$(subst /, ,$(1)))
-make.libobjsV.mk: $(SRC)
+#T# * Add "make.libobjsV.mk" to the dependency list of the "build_all" rule.
+make.libobjsV.mk: $(SRC) Makefile
 	echo "OBJS_TARGLIB += $(addprefix $(call lastdir,$(CURDIR))/,$(OBJS))" \
 		> make.libobjsV.mk
-#T# Then add:
-#T#   OBJS_TARGLIB:=
-#T#   -include subdir/make.libobjsV.mk
-#T# ...to the parent Makefile.  You should also add this dependency rule:
-#T#   subdir/make.libobjsV.mk:
-#T#	  cd subdir && $(MAKE) make.libobjsV.mk
+#T# * Add:
+#T#       OBJS_TARGLIB:=
+#T#       -include $(TARG_SUBDIRS:%=%/make.libobjsV.mk)
+#T#   ...to the parent Makefile, just before the "Make Rules" section.
+#T# * Add the following dependency rules:
+#T#       $(TARG_LIBRARIES): $(OBJS_TARGLIB)
+#T#       $(OBJS_TARGLIB): $(TARG_SUBDIRS:%=%/make.libobjsV.mk)
+#T# * Add the following Build Rule to the appropriate section:
+#T#	  %/make.libobjsV.mk: %.build_all
 
 
 #

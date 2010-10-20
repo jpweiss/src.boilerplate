@@ -29,6 +29,7 @@
 #   LIBDIR
 #   INCDIR
 #   SRCDOCDIR
+# These 4 vars are usually defined in "make.vars.mk".
 
 # Doxygen-related:
 #   DOXYGEN_CFG
@@ -42,7 +43,8 @@
 
 $(SRCDOCDIR):
 	mkdir -p $(SRCDOCDIR)
-	ln -s $(SRCDOCDIR) $(DOXYGEN_CFG_TARG_DIR)
+	[ -n "$(DOXYGEN_CFG_TARG_DIR)" ] && \
+		ln -s $(SRCDOCDIR) $(DOXYGEN_CFG_TARG_DIR)
 
 doxy: $(SRCDOCDIR)
 	doxygen $(DOXYGEN_CFG)
