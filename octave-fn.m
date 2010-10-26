@@ -27,7 +27,7 @@
 ## Author: John P. Weiss
 ## Created: 5/2003
 ## Keywords: this that
-## Version: RCS $Id$
+## Version: $Id$
 
 function [a, b, c] = xFOOx (arg1, arg2)
   ## nargin == number of args actuallly specified

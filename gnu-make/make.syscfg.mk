@@ -17,7 +17,7 @@
 # You should have received a copy of the file "LICENSE", containing
 # the License John Weiss originally placed this program under.
 #
-# RCS $Id$
+# $Id$
 ##########
 #
 # Architecture.  Not used by all compilers.

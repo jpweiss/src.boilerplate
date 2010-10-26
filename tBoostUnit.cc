@@ -14,7 +14,7 @@
 // the License John Weiss originally placed this program under.
 //
 static const char* const
-xFOOx_cc__="RCS $Id$";
+xFOOx_cc__="$Id$";
 
 
 // Includes

@@ -13,7 +13,7 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-// RCS $Id$
+// $Id$
 //
 
 
@@ -51,7 +51,7 @@ public class tJUnit extends TestCase
     // Leave in main program files to incorporate version numbers into the
     // code.
     private static final String __ID__=
-    "RCS $Id$";
+    "$Id$";
 
 
     public static final String OTHER_CONST="foo";

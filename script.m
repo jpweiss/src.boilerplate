@@ -13,7 +13,7 @@
 ## You should have received a copy of the file "LICENSE", containing
 ## the License John Weiss originally placed this program under.
 ##
-## RCS $Id$
+## $Id$
 #############
 1; # Required to distinguish this from a function-file
 
