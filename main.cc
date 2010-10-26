@@ -87,8 +87,8 @@ public:
     //
     // There are a few different ways you can use the base-class.
     //
-    explicit ProgramOptions(const string& programName)
-        : Base_t(programName)
+    explicit ProgramOptions(const string& theProgramName)
+        : Base_t(theProgramName)
     {
         m__docDetails_FakeOption[2] = 0;
     }
