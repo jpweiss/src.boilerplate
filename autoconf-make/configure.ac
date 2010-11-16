@@ -28,8 +28,9 @@ AX_JPW_USE_FHS_DEFAULTS
 
 # FIXME::[jpw]  Remove if not true:
 # [jpw] We're building Debian and RPM packaging files.
-AX_JPW_CREATING_DEB_RPM([pkgTemplates/debian.control], 
-                        [pkgTemplates/%%ProjectName%%.spec])
+AX_JPW_CREATING_DEB_RPM([pkgTemplates],
+                        [debian.control], 
+                        [%%ProjectName%%.spec])
 
 
 # [jpw] Example of how to define a custom variable.
