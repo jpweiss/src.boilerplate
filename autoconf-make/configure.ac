@@ -26,6 +26,11 @@ m4_include([ax_jpwTools.m4])
 # [jpw] We're building on Linux only.  Follow the FHS layout.
 AX_JPW_USE_FHS_DEFAULTS
 
+# FIXME::[jpw]  Remove if not true:
+# [jpw] We're building Debian and RPM packaging files.
+AX_JPW_CREATING_DEB_RPM([pkgTemplates/debian.control], 
+                        [pkgTemplates/%%ProjectName%%.spec])
+
 
 # [jpw] Example of how to define a custom variable.
 #AX_JPW_ARG_MAKEFILE_VAR([CUSTOM_PATH], 
@@ -100,8 +105,7 @@ AX_JPW_REQUIRE([BOOST_PROGRAM_OPTIONS], [boost::program_options], [ax])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  #%custom-file-without-the-.in-suffix%#
-                 #%package-name%#.spec
-                 debian/control])
+                 ])
 AC_OUTPUT
 
 

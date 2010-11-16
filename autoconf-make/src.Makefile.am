@@ -22,12 +22,16 @@ dist_bin_SCRIPTS = #@scripts-that-should-be-installed-in-$(bindir)@#
 
 ## [jpw] Example:  When you can't use dist_bin_SCRIPTS, and want to include
 ## files in the source package, do something like this:
-#%custom-descr-name%_DATA = #@extra-files-go-here@#
+#%custom-descr-name%#dir = #@install-path-goes-here@#
+# N.B.:  '#%custom-descr-name%#_DATA' requires '#%custom-descr-name%#dir'
+#%custom-descr-name%#_DATA = #@extra-files-go-here@#
 
 
 ## [jpw] Example:  You have scripts or other files that require the value of
 ## `configure' variables.  You can put their names in configure.ac to
 ## auto-generate them, but you'll still need to add the following lines:
+#%files-dot-in-name%#dir = #@install-path-goes-here@#
+# N.B.:  '#%files-dot-in-name%#_DATA' requires '#%files-dot-in-name%#dir'
 #%files-dot-in-name%_DATA = #@file1@# #@file2.example.m@#
 #EXTRA_DIST = #@file1.in@# #@file2.example.m.in@#
 #CLEANFILES = $(%files-dot-in-name%_DATA)
