@@ -1,0 +1,126 @@
+# -*- mode: sh; eval: (sh-set-shell "rpm") -*-
+
+%define major 0
+%define minor 0
+%define revision 0
+
+Name: @^rpm_package^@
+Summary: @^summary^@
+Version: %{major}.%{minor}.%{revision}
+## FIXME::[jpw] Alt:
+#Version: @version@
+Release: 1
+## FIXME::[jpw] Alt:
+#Release: 1jpw
+Source: http://@^master_server^@/get/@^package^@-%{version}.tgz
+## FIXME::[jpw] You can have multiple source files:
+#Source0: @^srcfile-url^@
+#Source1: @^srcfile-url^@
+# : etc
+URL: http://@^master_server^@/
+##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+## FIXME::[jpw] If you use this file with Autoconf, remove the block
+## above and uncomment the following:
+#Name: @PACKAGE_TARNAME@
+#Summary: @^summary^@
+#Version: @PACKAGE_VERSION@
+#Release: 1
+#Source: @PACKAGE_URL@/files/v%{version}/@PACKAGE_TARNAME@-%{version}.tgz
+##  OR:
+#Source: @PACKAGE_URL@/files/v%{version}/%{name}-%{version}.tgz
+#URL: @PACKAGE_URL@
+##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+License: @^release_license^@
+Group: @^thegroup_or_delete^@
+#Provides: @^providesym^@
+## FIXME::[jpw] You can (and should) use this tag more than once.
+#Requires: @^reqname^@
+
+
+BuildRoot: %{_tmppath}/%{name}-buildroot
+BuildArchitectures: i386 i586 i686 x86_64 amd64
+## FIXME::[jpw] You can (and should) use this tag more than once.
+#BuildRequires: @^pkgname^@
+
+# Distro-Specific Requirements:
+%if %{defined fedora}
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined mdkversion} || %{defined mandriva_version}
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined suse_version}
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined rhel_version}
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined centos_version}
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined arklinux_version}  # Valid?
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined altlinux_version}  # Valid?
+%{define requirements_are_set 1}
+%endif
+
+%if %{defined pclinuxos_version}  # Valid?
+%{define requirements_are_set 1}
+%endif
+
+# The Defaults:
+%if %{undefined requirements_are_set}
+%endif
+
+
+# 'Prefix:' makes the listed paths relocatable.
+##Prefix: %{_prefix}
+##Prefix: %{_sysconfdir}
+#Docdir: @^doc_dir@/@^package^@
+## FIXME::[jpw] For use with Autoconf
+#Docdir: @^docdir^@
+##@^extra_headers^@
+
+%description
+@^description^@
+
+%prep
+rm -rf %{buildroot}/*
+%setup
+
+
+%build
+echo BuildRoot=%{buildroot}
+%configure
+#%configure $LOCALFLAGS
+%{__make}
+
+%postun
+
+%post
+
+%install
+%{__make} install DESTDIR=%{buildroot}
+
+%clean
+rm -rf %{buildroot}/*
+
+%files
+    %defattr(-,root,root)
+    %doc @^doc_files^@
+    %config @^a_config_file^@
+    %config @^another_config_file^@
+    %config(noreplace) @^a_config_file_not_to_overwrite^@
+    %{_bindir}/*
+    %{_mandir}/*
+
+%changelog
+* Sun Jan 1 2010 John Weiss <jpwcandide@sourceforge.net> %{version}-%{release}
+- Adapted from the original package/tarball/whatever.
