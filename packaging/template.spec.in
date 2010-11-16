@@ -80,12 +80,12 @@ BuildArchitectures: i386 i586 i686 x86_64 amd64
 %endif
 
 
+# [jpw] You generally don't need these.  See the RPM Specfile documentation.
+# 
 # 'Prefix:' makes the listed paths relocatable.
 ##Prefix: %{_prefix}
 ##Prefix: %{_sysconfdir}
 #Docdir: @^doc_dir@/@^package^@
-## FIXME::[jpw] For use with Autoconf
-#Docdir: @^docdir^@
 ##@^extra_headers^@
 
 %description
@@ -93,13 +93,15 @@ BuildArchitectures: i386 i586 i686 x86_64 amd64
 
 %prep
 rm -rf %{buildroot}/*
-%setup
 
+%setup
 
 %build
 echo BuildRoot=%{buildroot}
+
 %configure
 #%configure $LOCALFLAGS
+
 %{__make}
 
 %postun
@@ -115,7 +117,9 @@ rm -rf %{buildroot}/*
 %files
     %defattr(-,root,root)
     %doc @^doc_files^@
+    %doc %{_docdir}/@^share_doc_subdir_as_installed^@/*
     %config @^a_config_file^@
+    %config %{_sysconfdir}/@^config_file_under_etc^@
     %config @^another_config_file^@
     %config(noreplace) @^a_config_file_not_to_overwrite^@
     %{_bindir}/*
