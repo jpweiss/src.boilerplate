@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // Implementation of: ????
 //
-// Copyright (C) 2010 by John Weiss
+// Copyright (C) 2011 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
 // "LICENSE" in the source code archive.
@@ -38,6 +38,9 @@ xFOOx_cc__="$Id$";
 #include "ProgramOptions_Base.h"
 #include "xFOOx.h"
 
+//TODO// Uncomment or remove, depending on what you need.
+//#include "config.h"
+
 
 //
 // Using Decls.
@@ -54,6 +57,23 @@ using std::flush;
 //
 // Static variables
 //
+
+
+//TODO// Uncomment, modify, or remove as needed.
+/*
+namespace g__ {
+ const string CopyrightInfo="Copyright (C) 2011 by John Weiss\n"
+     "This program is free software; you can redistribute it and/or modify\n"
+     "it under the terms of the Artistic License.\n"
+     "\n"
+     "This program is distributed in the hope that it will be useful,\n"
+     "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+     "\n"
+     "Sourceforge project page:\n"
+     "    \"" PACKAGE_URL "\"";
+};
+*/
 
 
 //
@@ -293,8 +313,26 @@ int main(int argc, char* argv[])
 
     // Call cxx_main(), which is where almost all of your code should go.
     try {
-        ProgramOptions myOpts(myName);
-        myOpts.parse(argc, argv);
+        ProgramOptions myOpts(myName /*, (ACPATH_SYSCONFDIR "/")*/);
+        //myOpts.setVersion(PACKAGE_VERSION, g__::CopyrightInfo);
+
+        bool parsedOk = myOpts.parse(argc, argv);
+        //TODO// This next block may be required to prevent the program from
+        //TODO// segfaulting when options are missing.  Or it might not.  Test
+        //TODO// your program with and without it.
+        /*
+        if(!parsedOk) {
+            cerr << "Fatal Error:  "
+                 << endl
+                 << "Unable to parse commandline arguments "
+                 << "and/or configuration file."
+                 << endl
+                 << endl
+                 << "Cannot continue."
+                 << endl;
+            return 1;
+        }
+        */
 
         return cxx_main(myName, myPath, myOpts);
     } catch(FooException& ex) {

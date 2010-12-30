@@ -3,7 +3,7 @@
 # Special GNU-make file with the dependency-building and reading rules.
 #
 #
-# Copyright (C) 2010 by John P. Weiss
+# Copyright (C) 2011 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file
