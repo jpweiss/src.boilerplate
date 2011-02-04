@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// Implementation of: ????
+// Unit Tests for: ????
 //
 // Copyright (C) 2011 by John Weiss
 // This program is free software; you can redistribute it and/or modify
@@ -44,7 +44,12 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::flush;
-using jpwTools::RandomDataSrc;
+using jpwTools::random::RandomDataSrc;
+
+
+//
+// Typedefs
+//
 
 
 //
@@ -52,9 +57,103 @@ using jpwTools::RandomDataSrc;
 //
 
 
+namespace marker {
+ const char* const testSep="%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+     "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+
+ const char* const testHeaderLHS="%%%%  ";
+ const char* const testHeaderRHS="  %%%%";
+
+ const char* const sub_dot_dash="_._._._._._._._._._._._._._._."
+     "_._._._._._._._._._._._._._._";
+ const char* const sub_dbl_dash="=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+     "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
+}; // end namespace marker
+
+namespace {
+ const string::size_type LINE_LENGTH(78);
+};
+
+
+//////////////////////////////////////////////////////////////////////////////
+
 //
-// Typedefs
+// Utility Inlines
 //
+
+
+inline void markTestEnd()
+{
+    cout << endl << endl << marker::testSep << endl;
+}
+
+
+inline void markTestStart(const string& testName)
+{
+    static const string::size_type HDR_LEN(LINE_LENGTH-16);
+
+    string::size_type spaceLen=((HDR_LEN-16-testName.length())/2);
+    if((spaceLen > 30) /*|| (spaceLen < 0)*/) {
+        spaceLen=0;
+    }
+
+    cout << marker::testHeaderLHS;
+    if(spaceLen) {
+        string spacer(spaceLen, ' ');
+        cout << spacer<< testName << spacer;
+    } else {
+        cout << testName;
+    }
+    cout << marker::testHeaderRHS << endl << endl;
+}
+
+
+inline void markTest(const string& testName)
+{
+    markTestEnd();
+    markTestStart(testName);
+}
+
+
+inline void dottedSeparator(const char* subtestName=0)
+{
+    static const char* const dotted=
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
+        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7";
+    cout << dotted << endl;
+    if(subtestName) {
+        cout << '\t' << subtestName << endl << endl;
+    }
+}
+
+
+inline void dotdashSeparator(const char* subtestName=0)
+{
+    static const char* const dot_dash="\u00B7-\u00B7-\u00B7-\u00B7-"
+      "\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-"
+      "\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-"
+      "\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-"
+      "\u00B7-\u00B7-\u00B7";
+    cout << dot_dash << endl;
+    if(subtestName) {
+        cout << '\t' << subtestName << endl << endl;
+    }
+}
+
+
+inline void separator(unsigned n, const char* subtestName=0)
+{
+    cout << marker::sub_dbl_dash << '[' << n << ']' << endl;
+    if(subtestName) {
+        cout << '\t' << subtestName << endl << endl;
+    }
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -73,6 +172,9 @@ using jpwTools::RandomDataSrc;
 
 void processParams(const vector<string>& argv, RandomDataSrc& xi)
 {
+    using std::hex;
+    using std::dec;
+
     bool hasSeed(false);
     unsigned long elSeed(0);
 
@@ -128,20 +230,18 @@ int cxx_main(const string& myName,
              const string& myPath,
              const vector<string>& argv)
 {
-    static const char* testSep="%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-        "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
-
     RandomDataSrc xi;
     // Also sets the seed if provided amongst the cmdline args.
     processParams(argv, xi);
 
 
-    cout << testSep << endl << endl;
+    markTestStart("testName or testFnName()");
     cout << "Doing test blah blah blah" << endl;
 
-    cout << testSep << endl << endl;
+    markTest("testName or testFnName()");
     cout << "Doing next test blah blah blah" << endl;
 
+    markTestEnd();
     return 0;
 }
 
@@ -166,18 +266,19 @@ int test_main(int argc, char* argv[])
     }
 
     // Call cxx_main(), which is where almost all of your code should go.
+#if GUARD_AGAINST_UNSUPPORTED_EXCEPTIONS_OR_DELETE_ME
     try {
         return cxx_main(myName, myPath, argVec);
     } catch(FooException& ex) {
         cerr << "Caught Foo: " << ex.what() << endl;
         return 3;
-    } catch(exception& ex) {
-         cerr << endl << "(Std) Exception caught: \""
-              << ex.what() << "\"" << endl;
-    } catch(...) {
-        cerr << "Unknown exception caught." << endl;
     }
+    // Don't catch generic exceptions; let the Boost Test Framework do that.
     return -1;
+#else // Delete if you want/need to guard against certain exceptions.
+    // Don't catch exceptions; let the Boost Test Framework do that.
+    return cxx_main(myName, myPath, argVec);
+#fi
 }
 
 
