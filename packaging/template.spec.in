@@ -36,11 +36,11 @@ Group: @^thegroup_or_delete^@
 ## FIXME::[jpw] You can (and should) use this tag more than once.
 #Requires: @^reqname^@
 
-
 BuildRoot: %{_tmppath}/%{name}-buildroot
 BuildArchitectures: i386 i586 i686 x86_64 amd64
 ## FIXME::[jpw] You can (and should) use this tag more than once.
 #BuildRequires: @^pkgname^@
+
 
 # Distro-Specific Requirements:
 %if %{defined fedora}
@@ -63,15 +63,15 @@ BuildArchitectures: i386 i586 i686 x86_64 amd64
 %{define requirements_are_set 1}
 %endif
 
-%if %{defined arklinux_version}  # Valid?
+%if %{defined arklinux_version}
 %{define requirements_are_set 1}
 %endif
 
-%if %{defined altlinux_version}  # Valid?
+%if %{defined altlinux_version}
 %{define requirements_are_set 1}
 %endif
 
-%if %{defined pclinuxos_version}  # Valid?
+%if %{defined pclinuxos_version}
 %{define requirements_are_set 1}
 %endif
 
@@ -88,13 +88,22 @@ BuildArchitectures: i386 i586 i686 x86_64 amd64
 #Docdir: @^doc_dir@/@^package^@
 ##@^extra_headers^@
 
+
 %description
-@^description^@
+ @^description^@
+ .
+ The description must be indented by one space, every line.
+ Blank lines should have a single "." in it, indented by one space.
+
 
 %prep
 rm -rf %{buildroot}/*
-
-%setup
+%setup -c \ # create the build-dir before untarring
+    [-n real-name-of-builddir--do-not-use-with_-c] \
+    [-a Num-of-Source:-to-untar-after-cd-to-srcdir] \
+    [-b Num-of-Source:-to-untar-before-cd-to-srcdir] \
+    -D \ # Disable srcdir deletion
+    -q # Run quietly
 
 %build
 echo BuildRoot=%{buildroot}
@@ -104,9 +113,18 @@ echo BuildRoot=%{buildroot}
 
 %{__make}
 
-%postun
+
+%pre
+
 
 %post
+
+
+%preun
+
+
+%postun
+
 
 %install
 %{__make} install DESTDIR=%{buildroot}
@@ -126,5 +144,5 @@ rm -rf %{buildroot}/*
     %{_mandir}/*
 
 %changelog
-* Sun Jan 1 2010 John Weiss <jpwcandide@sourceforge.net> %{version}-%{release}
-- Adapted from the original package/tarball/whatever.
+* Sun Jan 1 2011 John Weiss <jpwcandide@sourceforge.net> %{version}-%{release}
+- Put changes here, or a reference to an entry in your CHANGELOG file.
