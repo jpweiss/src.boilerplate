@@ -201,7 +201,7 @@ sub process_options($\%@) {
     push(@valid_opts, "help|h");
     $ref_optmap->{'verbose'} = \$_Verbose;
     # Append a '+' for multiple verbosity levels
-    push(@valid_opts, "verbose|v+");
+    push(@valid_opts, "verbose|v:+");
     $ref_optmap->{'man'} = 0;
     push(@valid_opts, "man");
     $ref_optmap->{'unit_test'} = \$_UnitTest;
