@@ -170,7 +170,7 @@ sub usage_builder(\@;\%@) {
     foreach (@$ref_valid_opts) {
         my $opt = $_; # This prevents the elements of @valid_opts from being
                       # modified.
-        $opt =~ s/(?:=[^=]+|[+!])$//;
+        $opt =~ s/(?:[+!]|[=:][^=:]+)$//;
         my @alts = ();
         my $cannonical='';
         foreach my $alt (split(/\|/, $opt)) {
