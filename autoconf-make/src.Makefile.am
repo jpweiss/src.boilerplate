@@ -16,7 +16,7 @@ bin_PROGRAMS = #@prog-names-here@#
 	Trace.cc Daemonizer.cc \
 	ProgramOptions_Base.cc msnek4k_driverd.cc \
 	LibTrace.h Trace.h Daemonizer.h ProgramOptions_Base.h
-%prog1-name%_LDADD = $(BOOST_PROGRAM_OPTIONS_LIB) #@add-any-others-here@#
+%prog1-name%_LDADD = #@add-any-others-here@#
 
 dist_bin_SCRIPTS = #@scripts-that-should-be-installed-in-$(bindir)@#
 

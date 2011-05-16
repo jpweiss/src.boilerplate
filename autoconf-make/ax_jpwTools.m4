@@ -71,6 +71,100 @@ AC_DEFUN([AX_JPW_REQUIRE],
 ])
 
 
+## AX_JPW_ADD_LIB_STATIC([<Lib>], [<DefineUnquoted>])
+##
+## Adds the library <Lib> to the list of libraries to link, but using static 
+## linking.
+##
+## A '-l' is prepented to <Lib> and the resulting string added to the left of
+## "LIBS"
+##
+## {Optional}
+## "<DefineUnquoted>>" is a flag.  If set (to anything), this macro will
+## additionally define the "HAVE_LIB<Lib>" cpp constant.
+##
+AC_DEFUN([AX_JPW_ADD_LIB_STATIC],
+[
+  LIBS="-Wl,-Bstatic $1 -Wl,-Bdynamic $LIBS"
+  if test "x$2" != "x" ; then
+      AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$1))
+  fi
+])
+
+
+## AX_JPW_ADD_BOOST_PROGRAM_OPTIONS([<static>], [<is_mt>])
+##
+## Invokes the following:
+## 
+##     AX_BOOST_PROGRAM_OPTIONS
+##     AX_JPW_REQUIRE([BOOST_PROGRAM_OPTIONS], [boost::program_options], [ax])
+##
+## ...then adds $BOOST_PROGRAM_OPTIONS_LIB to "LIBS".
+##
+## {Optional}
+## "<static>" is a flag.  If set (to anything), the library will be added
+## using AX_JPW_ADD_LIB_STATIC
+##
+## {Optional}
+## "<not_mt>" is a flag.  If set (to anything), the non-reentrant version of
+## the library is added instead of the multithreaded one
+##
+AC_DEFUN([AX_JPW_ADD_BOOST_PROGRAM_OPTIONS],
+[
+  AX_BOOST_PROGRAM_OPTIONS
+  AX_JPW_REQUIRE([BOOST_PROGRAM_OPTIONS], [boost::program_options], [ax])
+
+  jpw__b_po_lib="$BOOST_PROGRAM_OPTIONS_LIB"
+  if test "x$2" != "x" ; then
+      jpw__b_po_lib=`echo $jpw__b_po_lib | sed -e 's/-mt$//'`
+  fi
+
+  if test "x$1" = "x" ; then
+      LIBS="$jpw__boost_progopts_lib $LIBS"
+  else
+      AX_JPW_ADD_LIB_STATIC([$jpw__b_po_lib])
+  fi
+])
+
+
+## AX_JPW_CHECK_LIB([<Function>],
+##                  [<Lib>],
+##                  [<staticLinking>],
+##                  [<OtherLibs>])
+##
+## Invokes:
+##     AC_CHECK_LIB(<Lib>, <Function>, [CUST_ADD], [CUST_ERR], <OtherLibs>)
+##
+## ...where "CUST_ADD" and "CUST_ERR" are custom operations described below.
+##
+## "CUST_ERR" is a call to "AC_MSG_ERROR" using the error message:
+##     "Failed to the <Lib> library.  Cannot continue."
+## 
+## "CUST_ADD" performs the same operations as AC_CHECK_LIB, with one 
+## special addition.  If the argument "<staticLinking>" is not empty, the
+## libraries added will be statically-linked.
+##
+AC_DEFUN([AX_JPW_CHECK_LIB],
+[
+  jpw__tstLib="$1"
+  jpw__tstFunction="$2"
+  jpw__staticLinking="$3"
+  jpw__otherTstLibs="$4"
+
+  jpw__tstErrMsg="Error:  Failed to find the \"$jpw__tstLib\" library.
+                  Cannot continue."
+
+  if test "x$jpw__staticLinking" != "x" ; then
+      AC_CHECK_LIB([$jpw__tstLib], [$jpw__tstFunction],
+                   [AX_JPW_ADD_LIB_STATIC([$jpw__tstLib])],
+                   [AC_MSG_ERROR([$jpw__tstErrMsg])])
+  else
+      AC_CHECK_LIB([$jpw__tstLib], [$jpw__tstFunction], [],
+                   [AC_MSG_ERROR([$jpw__tstErrMsg])])
+  fi
+])
+
+
 ## AX_JPW_SET_VAR_DEFAULT([<varname>],
 ##                        [<default-value>])
 ##
@@ -111,6 +205,81 @@ AC_DEFUN([AX_JPW_ARG_MAKEFILE_VAR],
 [
    AC_ARG_VAR([$1], [$3])
    AX_JPW_SET_VAR_DEFAULT([$1], [$2])
+])
+
+
+## This is an internal helper macro.  No user-servicable parts inside.
+##
+AC_DEFUN([AX_JPW_EXPORT_PATH_TO_CONFIG_H__IMPL],
+[
+  AC_CONFIG_COMMANDS_PRE(
+  [
+    # [jpw] FIXME:  The following check doesn't do what I wanted.  I wanted
+    # 'autoconf'/'autoreconf' to perform it to warn developers if they have
+    # typos or such.
+    #
+    # Unfortunately, (A) it creates a test in 'configure'; (B) 'autoconf'
+    # always evaluates it as 'false'.  I guess it doesn't know about 'prefix'
+    # variable and friends.
+    #
+    #if AS_VAR_TEST_SET([$2]); then
+      AS_VAR_COPY([jpw__path_expanded_val], [$2])
+      eval jpw__path_expanded_val=$jpw__path_expanded_val
+      AC_DEFINE_UNQUOTED([$1],
+                         ["$jpw__path_expanded_val"],
+                         [Exported from Autoconf's 'configure' script: 
+                          the "--sysconfdir" setting.])
+    #else
+    #  m4_fatal([FATAL ERROR:  Programmer-misuse.
+    #            No such Autoconf variable, "$2".])
+    #fi
+  ])
+])
+
+
+## AX_JPW_EXPORT_PATH_TO_CONFIG_H([<autoconf-variable>])
+##
+## "Exports" an Autconf variable to your C/C++ source.
+## 
+## Specifically, defines a CPP macro in "config.h".  The name of the macro
+## always begins with "ACPATH_", and is followed by "<autoconf-variable>"
+## all-uppercased.
+##
+## The macro's value is a string constant, containing the value of
+## <autoconf-variable> as set by 'configure'.
+##
+## Example:
+##
+##    # Set in configure.ac:
+##    AX_JPW_EXPORT_PATH_TO_CONFIG_H([datadir])
+##    AX_JPW_EXPORT_PATH_TO_CONFIG_H([localstatedir])
+##
+##    # How you ran 'configure':
+##    configure --prefix=/opt/custom/WhizBangPackage \
+##        --localstatedir=/opt/var
+##
+##    # How you ran 'make':
+##    make DESTDIR=$HOME/src/buildarea
+##
+## After running 'autoconf' (or 'autoreconf') 'config.h.in' will contain:
+## "#undef ACPATH_DATADIR" and "#undef ACPATH_LOCALSTATEDIR".  The second part
+## of the example creates the following two entries in "config.h":
+##   #define ACPATH_DATADIR "/opt/custom/WhizBangPackage/share"
+##   #define ACPATH_LOCALSTATEDIR "/opt/var"
+## Notice that 'datadir' is _fully_ _expanded_.
+##
+## Finally, the example's last part _has_ _no_ _effect_ _whatsoever_ on the
+## ACPATH_DATADIR and ACPATH_LOCALSTATEDIR macros in "config.h".  This is by
+## design.  The value of any "ACPATH_" macros should tell your program where
+## it was _ultimately_ _installed_, not where it was built or installed for
+## the sake of packaging.  Use them accordingly.
+##
+AC_DEFUN([AX_JPW_EXPORT_PATH_TO_CONFIG_H],
+[
+    m4_define([jpw__m4_config_h_name], [ACPATH_])
+    m4_append([jpw__m4_config_h_name], m4_toupper([$1]))
+    AX_JPW_EXPORT_PATH_TO_CONFIG_H__IMPL([jpw__m4_config_h_name],
+                                         [$1])
 ])
 
 
@@ -201,6 +370,9 @@ AC_DEFUN([AX_JPW_USE_FHS_DEFAULTS],
 ## Both arguments are optional, and should specify lists of *.in files
 ## required by the packaging software.
 ##
+## `configure' will also "install" the generated files if you set the envvar
+## REBUILD_PACKAGING_FILES to any nonempty string.
+##
 ## <path-to-.in-files>
 ##   This is the path containing the *.in files specified in the
 ##   <deb-file-list> and <rpm-file-list> arguments.
@@ -222,6 +394,7 @@ AC_DEFUN([AX_JPW_CREATING_DEB_RPM],
   jpw__deb_ftb="$2"
   jpw__rpm_ftb="$3"
   jpw__bpf_cmds=""
+  jpw__bpf_cflst=""
 
   AC_ARG_VAR([REBUILD_PACKAGING_FILES],
              [Used by maintainers to recreate static files.  Safe
@@ -229,9 +402,9 @@ AC_DEFUN([AX_JPW_CREATING_DEB_RPM],
 
   # Add the Debian packaging file(s), if there are any.
   if test "x$jpw__deb_ftb" != "x"; then
-    AC_CONFIG_FILES([${jpw__path_ftb}/${jpw__deb_ftb}])
     for jpw__deb_file in $jpw__deb_ftb; do
       jpw__deb_file_src="${jpw__path_ftb}/${jpw__deb_file}"
+      jpw__bpf_cflst="${jpw__bpf_cflst} ${jpw__deb_file_src}"
       jpw__deb_file_targ="debian/${jpw__deb_file#debian.}"
       jpw__deb_file_cp_cmd="cp $jpw__deb_file_src $jpw__deb_file_targ;"
       jpw__bpf_cmds="${jpw__bpf_cmds} ${jpw__deb_file_cp_cmd}"
@@ -244,12 +417,18 @@ AC_DEFUN([AX_JPW_CREATING_DEB_RPM],
 
   # Add the RPM *.spec file(s), if there are any.
   if test "x$jpw__rpm_ftb" != "x"; then
-    AC_CONFIG_FILES([${jpw__path_ftb}/${jpw__rpm_ftb}])
-    jpw__bpf_cmds="${jpw__bpf_cmds} cp ${jpw__path_ftb}/${jpw__rpm_ftb} ./;"
+    for jpw__rpm_file in $jpw__rpm_ftb; do
+      jpw__rpm_file_src="${jpw__path_ftb}/${jpw__rpm_file}"
+      jpw__bpf_cflst="${jpw__bpf_cflst} ${jpw__rpm_file_src}"
+      jpw__bpf_cmds="${jpw__bpf_cmds} cp ${jpw__path_ftb}/${jpw__rpm_ftb} ./;"
+    done
+    unset jpw__rpm_file
+    unset jpw__rpm_file_src
   fi
 
 
   # Now, add the "installation" commands, if we need them.
+  AC_CONFIG_FILES([${jpw__bpf_cflst}])
   AC_CONFIG_COMMANDS_PRE([if test -n "${REBUILD_PACKAGING_FILES}"; then
                             if test -n "$jpw__bpf_cmds"; then
                               eval "$jpw__bpf_cmds"

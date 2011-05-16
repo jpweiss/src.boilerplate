@@ -56,9 +56,11 @@ AC_PROG_FC # (there is also AC_PROG_F77)
 
 
 # Checks for libraries.
-#AC_CHECK_LIB([Example], [ExampleDiscard], [],
+#AC_CHECK_LIB([Example], [ExampleFn2Test], [],
 #             [AC_MSG_ERROR([Failed to find the Example extension library.
 #                            Cannot continue.]) ])
+#
+#AX_JPW_CHECK_LIB([Example], [ExampleFn2Test], [<static>])
 
 # Checks for header files.
 AC_PATH_X
@@ -96,8 +98,7 @@ AC_FUNC_FORK
 AC_CXX_HEADER_STDCXX_TR1
 AX_JPW_REQUIRE([CXX_STDCXX_TR1], [the C++ TR1 headers])
 AX_BOOST_BASE
-AX_BOOST_PROGRAM_OPTIONS
-AX_JPW_REQUIRE([BOOST_PROGRAM_OPTIONS], [boost::program_options], [ax])
+AX_JPW_ADD_BOOST_PROGRAM_OPTIONS(y, y)
 
 
 ## FIXME::[jpw]  Any files that contain things like @bindir@ and @sysconfdir@
