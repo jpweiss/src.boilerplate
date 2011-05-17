@@ -80,15 +80,27 @@ AC_DEFUN([AX_JPW_REQUIRE],
 ## "LIBS"
 ##
 ## {Optional}
-## "<DefineUnquoted>>" is a flag.  If set (to anything), this macro will
-## additionally define the "HAVE_LIB<Lib>" cpp constant.
+## "<DefineUnquoted>" is a flag.  If set to 'y', the "HAVE_LIB<Lib>" cpp
+## constant will be defined.  If set to any other value, the
+## "HAVE_LIB<DefineUnquoted>" cpp constant will be defined.
+##
+##
+## {Dev.Note.:  Because of how AC_DEFINE_UNQUOTED & AS_TR_CPP and other m4
+##              macros work, we need to pass our arguments directly to the
+##              m4-macros.  Otherwise, we won't get the correct behavior
+##              when running auto(re)conf.}
 ##
 AC_DEFUN([AX_JPW_ADD_LIB_STATIC],
 [
   LIBS="-Wl,-Bstatic $1 -Wl,-Bdynamic $LIBS"
-  if test "x$2" != "x" ; then
-      AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$1))
-  fi
+  m4_ifval([$2],
+           [m4_if([$2], [y],
+                  [AH_CHECK_LIB([$1]),
+                   AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$1))],
+                  [AH_CHECK_LIB([$2]),
+                   AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$2))]
+                  )],
+           [])
 ])
 
 
@@ -109,21 +121,25 @@ AC_DEFUN([AX_JPW_ADD_LIB_STATIC],
 ## "<not_mt>" is a flag.  If set (to anything), the non-reentrant version of
 ## the library is added instead of the multithreaded one
 ##
+##
+## {Dev.Note.:  Because of how m4 macros work, we need to pass our
+##              arguments directly to the m4-macros.  Otherwise, we 
+##              won't get the correct behavior when running auto(re)conf.}
+##
 AC_DEFUN([AX_JPW_ADD_BOOST_PROGRAM_OPTIONS],
 [
   AX_BOOST_PROGRAM_OPTIONS
   AX_JPW_REQUIRE([BOOST_PROGRAM_OPTIONS], [boost::program_options], [ax])
 
   jpw__b_po_lib="$BOOST_PROGRAM_OPTIONS_LIB"
-  if test "x$2" != "x" ; then
-      jpw__b_po_lib=`echo $jpw__b_po_lib | sed -e 's/-mt$//'`
-  fi
+  m4_ifval([$2],
+           [jpw__b_po_lib=`echo $jpw__b_po_lib | sed -e 's/-mt$//'`],
+           [])
 
-  if test "x$1" = "x" ; then
-      LIBS="$jpw__boost_progopts_lib $LIBS"
-  else
-      AX_JPW_ADD_LIB_STATIC([$jpw__b_po_lib])
-  fi
+  m4_ifval([$1],
+           [AX_JPW_ADD_LIB_STATIC([$jpw__b_po_lib],
+                                  [BOOST_PROGRAM_OPTIONS])],
+           [LIBS="$jpw__b_po_lib $LIBS"])
 ])
 
 
@@ -144,24 +160,24 @@ AC_DEFUN([AX_JPW_ADD_BOOST_PROGRAM_OPTIONS],
 ## special addition.  If the argument "<staticLinking>" is not empty, the
 ## libraries added will be statically-linked.
 ##
+## {Dev.Note.:  Because of how AC_CHECK_LIB works, we need to pass our
+##              arguments directly to AC_CHECK_LIB and the other m4-macros.
+##              Otherwise, we won't get the correct behavior when running
+##              auto(re)conf.}
+##
 AC_DEFUN([AX_JPW_CHECK_LIB],
 [
-  jpw__tstLib="$1"
-  jpw__tstFunction="$2"
-  jpw__staticLinking="$3"
-  jpw__otherTstLibs="$4"
-
   jpw__tstErrMsg="Error:  Failed to find the \"$jpw__tstLib\" library.
                   Cannot continue."
 
-  if test "x$jpw__staticLinking" != "x" ; then
-      AC_CHECK_LIB([$jpw__tstLib], [$jpw__tstFunction],
-                   [AX_JPW_ADD_LIB_STATIC([$jpw__tstLib])],
-                   [AC_MSG_ERROR([$jpw__tstErrMsg])])
-  else
-      AC_CHECK_LIB([$jpw__tstLib], [$jpw__tstFunction], [],
-                   [AC_MSG_ERROR([$jpw__tstErrMsg])])
-  fi
+  m4_ifval([$3],
+           [AC_CHECK_LIB([$1], [$2], [],
+                         [AC_MSG_ERROR([$jpw__tstErrMsg])], [$4])
+           ],
+           [AC_CHECK_LIB([$1], [$2],
+                         [AX_JPW_ADD_LIB_STATIC([$1], y)],
+                         [AC_MSG_ERROR([$jpw__tstErrMsg])], [$4])
+           ])
 ])
 
 
