@@ -95,9 +95,9 @@ AC_DEFUN([AX_JPW_ADD_LIB_STATIC],
   LIBS="-Wl,-Bstatic $1 -Wl,-Bdynamic $LIBS"
   m4_ifval([$2],
            [m4_if([$2], [y],
-                  [AH_CHECK_LIB([$1]),
+                  [AH_CHECK_LIB([$1])
                    AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$1))],
-                  [AH_CHECK_LIB([$2]),
+                  [AH_CHECK_LIB([$2])
                    AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_LIB$2))]
                   )],
            [])
@@ -171,11 +171,11 @@ AC_DEFUN([AX_JPW_CHECK_LIB],
                   Cannot continue."
 
   m4_ifval([$3],
-           [AC_CHECK_LIB([$1], [$2], [],
-                         [AC_MSG_ERROR([$jpw__tstErrMsg])], [$4])
-           ],
            [AC_CHECK_LIB([$1], [$2],
                          [AX_JPW_ADD_LIB_STATIC([$1], y)],
+                         [AC_MSG_ERROR([$jpw__tstErrMsg])], [$4])
+           ],
+           [AC_CHECK_LIB([$1], [$2], [],
                          [AC_MSG_ERROR([$jpw__tstErrMsg])], [$4])
            ])
 ])
