@@ -138,7 +138,7 @@ AC_DEFUN([AX_JPW_ADD_BOOST_PROGRAM_OPTIONS],
 
   m4_ifval([$1],
            [AX_JPW_ADD_LIB_STATIC([$jpw__b_po_lib],
-                                  [BOOST_PROGRAM_OPTIONS])],
+                                  [boost_program_options])],
            [LIBS="$jpw__b_po_lib $LIBS"])
 ])
 
