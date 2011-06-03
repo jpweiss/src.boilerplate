@@ -1,8 +1,8 @@
 # -*- Makefile -*-
-#
+# 
 # Variables that are compiler- and architecture-specific.  This includes any
 # optimization flags, since these usually differ from platform to platform.
-#
+# 
 #
 # Copyright (C) 2011 by John P. Weiss
 #
@@ -17,7 +17,7 @@
 # You should have received a copy of the file "LICENSE", containing
 # the License John Weiss originally placed this program under.
 #
-# $Id$
+# RCS $Id$
 ##########
 #
 # Architecture.  Not used by all compilers.
@@ -32,9 +32,8 @@ ARCH:=generic
 #ARCH:=athlon64-sse3 #opteron-sse3
 #ARCH:=pentium-m
 
-
 # General architecture-specific compiler flags.
-ARCHFLAGS:= # -m128bit-long-double
+ARCHFLAGS:= # -m128bit-long-double 
 # Others, possibly set by "-march" or "-mtune":
 # -m3dnow -mmmx
 
@@ -42,8 +41,7 @@ ARCHFLAGS:= # -m128bit-long-double
 # variable, $(COMPILE_TYPE), which we'll define in the main makefile
 CFLAGS = $(COMPILE_TYPE)
 CXXFLAGS = # Leave empty
-# Remove C/C++-specific options.
-FFLAGS = $(filter-out -fno-default-inline, $(COMPILE_TYPE))
+##FFLAGS = $(COMPILE_TYPE)
 
 
 ##########
@@ -53,16 +51,20 @@ FFLAGS = $(filter-out -fno-default-inline, $(COMPILE_TYPE))
 ##########
 
 
-CC:=gcc
-CXX:=g++
+# For using an alternate compiler version:
+GVER=
+#LDFLAGS += 
+
+CC:=gcc$(GVER)
+CXX:=g++$(GVER)
 CCC:=$(CXX)
-CPP:=cpp
-##FC:=gfortran
-GCOV:=gcov
+CPP:=cpp$(GVER)
+##FC:=gfortran$(GVER)
+GCOV:=gcov$(GVER)
 GCOV_OPTS:=
 
 # GNU-make special:  These next two variables are part of every implicit
-# command.
+# command. 
 TARGET_ARCH:=-march=$(ARCH) #-mtune=$(ARCH) <- Redundant
 #							 -march implies & sets -mtune
 ifeq ($(ARCH), generic)
@@ -77,7 +79,7 @@ TARGET_MACH:=$(TARGET_ARCH)
 
 # Cross-linking libraries
 ##F_LIBS:=-lg2c # Linux g77, compat-gcc v3.2
-##F_LIBS:=-static-libgfortran -lgfortran # Linux gfortran, gcc v4.
+##F_LIBS:=-lgfortran # Linux gfortran, gcc v4
 ##F_LIBS:=-lfortran # Solaris; IRIX
 
 
@@ -95,7 +97,7 @@ OPTIMIZE:=-O3 -mieee-fp -malign-double \
 # Other optimizations:
 #     -mfpmath=sse
 #     -msse2
-#     -msse3                          # for -march=core2 only
+#     -msse3  # for -march=core2 only
 #     -maccumulate-outgoing-args
 #     -minline-all-stringops
 #  We'd need to try these out, one by one, and see how they improve
@@ -117,29 +119,22 @@ GPROF_GCC:=-pg
 GCOV_GCC:=-fprofile-arcs -ftest-coverage
 PROFILE:=$(GPROF_GCC) $(GCOV_GCC)
 
-# Google Perftools Support:
-CFLAGS_TCMALLOC=-fno-builtin-malloc -fno-builtin-calloc \
-	-fno-builtin-realloc -fno-builtin-free
-LIB_TCMALLOC=-ltcmalloc
-
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
-CFLAGS += $(ARCHFLAGS)
-FFLAGS += $(ARCHFLAGS)
+CFLAGS += $(ARCHFLAGS) 
+##FFLAGS += $(ARCHFLAGS) 
 
 #
 # Warnings (Per-Language)
-#
+# 
 
-CFLAGS += -Wall -W -Wformat-security -Wshadow
+CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 # What this does:
 #     -Wall: Use all warnings,
 #     -W: use some additional ones
 #     All remaining -Wxxx options are not included in "-Wall"
 # Other useful C/C++ flags:
 #     -pedantic
-# This next one can get very noisy:
-#     -Winline
 # Other Useful non"-Wall" options:
 #     -Wunreachable-code -Wno-deprecated-declarations
 # Uncomment this for applications in which we need to treat the floating point
@@ -155,7 +150,7 @@ CXXFLAGS += -felide-constructors \
 #     -felide-constructors:  Snip out temporaries created by the compiler
 #                            (like in return values to the RHS of op=(), etc.)
 #                            On by default in the present g++, but let's just
-#                            make sure...
+#                            make sure... 
 # Other g++ flags:
 #     -Wno-deprecated:  Disable warnings about older, non-std-compliant
 #                       G++-ism.
@@ -164,7 +159,7 @@ CXXFLAGS += -felide-constructors \
 
 #
 # Other Per-Language Options
-#
+# 
 
 # Used to generate the *.d  dependency files (under gcc):
 C_DEPFLAGS:=-MM -MP
@@ -174,9 +169,8 @@ C_DEPFLAGS:=-MM -MP
 # Make C++ include the same flags as C.
 CXXFLAGS += $(CFLAGS)
 
-# Integer default size in FORTRAN
-# [jpw; 201002]  This now appears deprecated, and INT is now 4 bytes by
-# 				 default.  For now.
+# Integer default size
+## [jpw; 2011/06]  Required for gfortran v4.3 and earlier
 ##FFLAGS += -i4
 
 
@@ -195,15 +189,13 @@ ARFLAGS=crv
 ##########
 
 
-#DEBUG_FLAGS:=#-DDEBUG
+#DEBUG_FLAGS:=-DDEBUG_GA #-DDEBUG
 #COMPILE_TYPE:=
 #LDFLAGS += $(PROFILE)
 #COMPILE_TYPE:=$(DEBUG) #$(PROFILE) #$(DEBUG_FLAGS)
 #COMPILE_TYPE:=$(DEBUG) $(DISABLE_INLINE) #$(DEBUG_FLAGS)
 #LDFLAGS += -lefence
-#LDFLAGS += -ldmalloc -ldmallocxx
-#CFLAGS += $(CFLAGS_TCMALLOC)
-#LDFLAGS += $(LIB_TCMALLOC)
+#LDFLAGS += -ldmalloc -ldmallocxx 
 #COMPILE_TYPE:=$(OPTIMIZE)
 #WARNING# Use this for the regression tests:
 COMPILE_TYPE:=$(REGRESSION)
