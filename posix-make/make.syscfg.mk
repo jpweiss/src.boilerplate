@@ -5,10 +5,10 @@
 # guaranteed to work AT ALL with other "make" variants.  Someday, it will.
 # Just not today.
 # WARNING WARNING WARNING
-# 
+#
 # Variables that are compiler- and architecture-specific.  This includes any
 # optimization flags, since these usually differ from platform to platform.
-# 
+#
 #
 # Copyright (C) 2011 by John P. Weiss
 #
@@ -38,22 +38,23 @@ ARCH:=generic
 #ARCH:=athlon64-sse3 #opteron-sse3
 #ARCH:=pentium-m
 
+
 # General architecture-specific compiler flags.
-ARCHFLAGS:= # -m128bit-long-double 
+ARCHFLAGS:= # -m128bit-long-double
 # Others, possibly set by "-march" or "-mtune":
 # -m3dnow -mmmx
 
 
 #------
 # Note:
-# 
+#
 # This file uses the following GNU-make features:
 #
 # '='  does not expand any RHS variables until LHS usage.  This is the default
 #      behavior for most "make" variants.
 # ':=' expands RHS variables immediately.
 # '+=' appends, using whatever behavior the LHS was first assigned with.
-# 
+#
 #------
 
 # Use non-expanding defn. for the language flags.  Set them to the special
@@ -72,7 +73,7 @@ CXXFLAGS = # Leave empty
 
 # For using an alternate compiler version:
 GVER=
-#LDFLAGS += 
+#LDFLAGS +=
 
 CC:=gcc$(GVER)
 CXX:=g++$(GVER)
@@ -143,14 +144,19 @@ GPROF_GCC:=-pg
 GCOV_GCC:=-fprofile-arcs -ftest-coverage
 PROFILE:=$(GPROF_GCC) $(GCOV_GCC)
 
+# Google Perftools Support:
+CFLAGS_TCMALLOC=-fno-builtin-malloc -fno-builtin-calloc \
+	-fno-builtin-realloc -fno-builtin-free
+LIB_TCMALLOC=-ltcmalloc
+
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
-CFLAGS += $(ARCHFLAGS) 
-##FFLAGS += $(ARCHFLAGS) 
+CFLAGS += $(ARCHFLAGS)
+##FFLAGS += $(ARCHFLAGS)
 
 #
 # Warnings (Per-Language)
-# 
+#
 
 CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 # What this does:
@@ -159,6 +165,8 @@ CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 #     All remaining -Wxxx options are not included in "-Wall"
 # Other useful C/C++ flags:
 #     -pedantic
+# This next one can get very noisy:
+#     -Winline
 # Other Useful non"-Wall" options:
 #     -Wunreachable-code -Wno-deprecated-declarations
 # Uncomment this for applications in which we need to treat the floating point
@@ -174,7 +182,7 @@ CXXFLAGS += -felide-constructors \
 #     -felide-constructors:  Snip out temporaries created by the compiler
 #                            (like in return values to the RHS of op=(), etc.)
 #                            On by default in the present g++, but let's just
-#                            make sure... 
+#                            make sure...
 # Other g++ flags:
 #     -Wno-deprecated:  Disable warnings about older, non-std-compliant
 #                       G++-ism.
@@ -183,7 +191,7 @@ CXXFLAGS += -felide-constructors \
 
 #
 # Other Per-Language Options
-# 
+#
 
 # Used to generate the *.d  dependency files (under gcc):
 C_DEPFLAGS:=-MM -MP
@@ -194,7 +202,6 @@ C_DEPFLAGS:=-MM -MP
 CXXFLAGS += $(CFLAGS)
 
 # Integer default size
-## [jpw; 2011/06]  Required for gfortran v4.3 and earlier
 ##FFLAGS += -i4
 
 
@@ -213,13 +220,15 @@ ARFLAGS=crv
 ##########
 
 
-#DEBUG_FLAGS:=-DDEBUG_GA #-DDEBUG
+#DEBUG_FLAGS:=-DDEBUG
 #COMPILE_TYPE:=
 #LDFLAGS += $(PROFILE)
 #COMPILE_TYPE:=$(DEBUG) #$(PROFILE) #$(DEBUG_FLAGS)
 #COMPILE_TYPE:=$(DEBUG) $(DISABLE_INLINE) #$(DEBUG_FLAGS)
 #LDFLAGS += -lefence
-#LDFLAGS += -ldmalloc -ldmallocxx 
+#LDFLAGS += -ldmalloc -ldmallocxx
+#CFLAGS += $(CFLAGS_TCMALLOC)
+#LDFLAGS += $(LIB_TCMALLOC)
 #COMPILE_TYPE:=$(OPTIMIZE)
 #WARNING# Use this for the regression tests:
 COMPILE_TYPE:=$(REGRESSION)
