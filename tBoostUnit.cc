@@ -24,14 +24,14 @@ xFOOx_cc__="$Id$";
 #include <vector>
 #include <stdexcept>
 
-#include <boost/test/minimal.hpp>
 #include <boost/lexical_cast.hpp>
 //#include <boost/something.hpp>
 
 #include "RandomDataSrc.h"
-#include "TestException.h"
 
 #include "xFOOx.h"
+
+#include "UnitTestTools.h"
 
 
 //
@@ -46,6 +46,8 @@ using std::endl;
 using std::flush;
 using jpwTools::random::RandomDataSrc;
 
+using namespace jpwTools::unitTesting;
+
 
 //
 // Typedefs
@@ -57,103 +59,8 @@ using jpwTools::random::RandomDataSrc;
 //
 
 
-namespace marker {
- const char* const testSep="%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-     "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
-
- const char* const testHeaderLHS="%%%%  ";
- const char* const testHeaderRHS="  %%%%";
-
- const char* const sub_dot_dash="_._._._._._._._._._._._._._._."
-     "_._._._._._._._._._._._._._._";
- const char* const sub_dbl_dash="=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-     "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=";
-}; // end namespace marker
-
 namespace {
- const string::size_type LINE_LENGTH(78);
 };
-
-
-//////////////////////////////////////////////////////////////////////////////
-
-//
-// Utility Inlines
-//
-
-
-inline void markTestEnd()
-{
-    cout << endl << endl << marker::testSep << endl;
-}
-
-
-inline void markTestStart(const string& testName)
-{
-    static const string::size_type HDR_LEN(LINE_LENGTH-16);
-
-    string::size_type spaceLen=((HDR_LEN-16-testName.length())/2);
-    if((spaceLen > 30) /*|| (spaceLen < 0)*/) {
-        spaceLen=0;
-    }
-
-    cout << marker::testHeaderLHS;
-    if(spaceLen) {
-        string spacer(spaceLen, ' ');
-        cout << spacer<< testName << spacer;
-    } else {
-        cout << testName;
-    }
-    cout << marker::testHeaderRHS << endl << endl;
-}
-
-
-inline void markTest(const string& testName)
-{
-    markTestEnd();
-    markTestStart(testName);
-}
-
-
-inline void dottedSeparator(const char* subtestName=0)
-{
-    static const char* const dotted=
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7"
-        "\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7\u00B7";
-    cout << dotted << endl;
-    if(subtestName) {
-        cout << '\t' << subtestName << endl << endl;
-    }
-}
-
-
-inline void dotdashSeparator(const char* subtestName=0)
-{
-    static const char* const dot_dash="\u00B7-\u00B7-\u00B7-\u00B7-"
-      "\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-"
-      "\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-"
-      "\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-\u00B7-"
-      "\u00B7-\u00B7-\u00B7";
-    cout << dot_dash << endl;
-    if(subtestName) {
-        cout << '\t' << subtestName << endl << endl;
-    }
-}
-
-
-inline void separator(unsigned n, const char* subtestName=0)
-{
-    cout << marker::sub_dbl_dash << '[' << n << ']' << endl;
-    if(subtestName) {
-        cout << '\t' << subtestName << endl << endl;
-    }
-}
 
 
 //////////////////////////////////////////////////////////////////////////////
