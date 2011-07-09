@@ -73,9 +73,6 @@ namespace jpwTools {
 
  private:
      static xFOOx* m__TheInstance_p;
-
-     // Assignment Operator
-     xFOOx& operator=(const xFOOx& other);
  };
 
 

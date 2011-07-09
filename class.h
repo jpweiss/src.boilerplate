@@ -63,11 +63,6 @@ namespace jpwTools {
      }
 
      //--------------- End Cut Here.
-     //--------------- Cut Here if not using "boost::noncopyable"
- private:
-     // Assignment Operator
-     xFOOx& operator=(const xFOOx& other);
-     //--------------- End Cut Here.
  };
 
 

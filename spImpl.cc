@@ -65,11 +65,6 @@ struct xFOOx::xFOOx_Impl : private boost::noncopyable
      }
 
      //--------------- End Cut Here.
-     //--------------- Cut Here if not using "boost::noncopyable"
- private:
-     // Assignment Operator
-     xFOOx_Impl& operator=(const xFOOx_Impl& other);
-     //--------------- End Cut Here.
 };
 
 

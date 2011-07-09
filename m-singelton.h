@@ -75,8 +75,6 @@ namespace jpwTools {
      xFOOx();
 
  private:
-     // Assignment Operator
-     xFOOx& operator=(const xFOOx& other);
  };
 
 
