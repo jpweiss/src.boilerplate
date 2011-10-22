@@ -17,7 +17,7 @@
 # You should have received a copy of the file "LICENSE", containing
 # the License John Weiss originally placed this program under.
 #
-# RCS $Id$
+# $Id$
 ##########
 #
 # Architecture.  Not used by all compilers.
@@ -53,16 +53,12 @@ FFLAGS = $(filter-out -fno-default-inline, $(COMPILE_TYPE))
 ##########
 
 
-# For using an alternate compiler version:
-GVER=
-#LDFLAGS +=
-
-CC:=gcc$(GVER)
-CXX:=g++$(GVER)
+CC:=gcc
+CXX:=g++
 CCC:=$(CXX)
-CPP:=cpp$(GVER)
-##FC:=gfortran$(GVER)
-GCOV:=gcov$(GVER)
+CPP:=cpp
+##FC:=gfortran
+GCOV:=gcov
 GCOV_OPTS:=
 
 # GNU-make special:  These next two variables are part of every implicit
@@ -81,7 +77,7 @@ TARGET_MACH:=$(TARGET_ARCH)
 
 # Cross-linking libraries
 ##F_LIBS:=-lg2c # Linux g77, compat-gcc v3.2
-##F_LIBS:=-lgfortran # Linux gfortran, gcc v4
+##F_LIBS:=-static-libgfortran -lgfortran # Linux gfortran, gcc v4.
 ##F_LIBS:=-lfortran # Solaris; IRIX
 
 
@@ -99,7 +95,7 @@ OPTIMIZE:=-O3 -mieee-fp -malign-double \
 # Other optimizations:
 #     -mfpmath=sse
 #     -msse2
-#     -msse3  # for -march=core2 only
+#     -msse3                          # for -march=core2 only
 #     -maccumulate-outgoing-args
 #     -minline-all-stringops
 #  We'd need to try these out, one by one, and see how they improve
@@ -129,13 +125,13 @@ LIB_TCMALLOC=-ltcmalloc
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
 CFLAGS += $(ARCHFLAGS)
-##FFLAGS += $(ARCHFLAGS)
+FFLAGS += $(ARCHFLAGS)
 
 #
 # Warnings (Per-Language)
 #
 
-CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
+CFLAGS += -Wall -W -Wformat-security -Wshadow
 # What this does:
 #     -Wall: Use all warnings,
 #     -W: use some additional ones
@@ -178,7 +174,9 @@ C_DEPFLAGS:=-MM -MP
 # Make C++ include the same flags as C.
 CXXFLAGS += $(CFLAGS)
 
-# Integer default size
+# Integer default size in FORTRAN
+# [jpw; 201002]  This now appears deprecated, and INT is now 4 bytes by
+# 				 default.  For now.
 ##FFLAGS += -i4
 
 
@@ -197,7 +195,7 @@ ARFLAGS=crv
 ##########
 
 
-#DEBUG_FLAGS:=-DDEBUG
+#DEBUG_FLAGS:=#-DDEBUG
 #COMPILE_TYPE:=
 #LDFLAGS += $(PROFILE)
 #COMPILE_TYPE:=$(DEBUG) #$(PROFILE) #$(DEBUG_FLAGS)
