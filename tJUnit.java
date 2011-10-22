@@ -1,5 +1,5 @@
 // -*- Java -*-
-// JUnit Test for class xFOOx
+// JUnit Test for class tJUnit_xREPLACEMEx
 //
 // Copyright (C) 2011 by John Weiss
 // This program is free software; you can redistribute it and/or modify
@@ -17,30 +17,33 @@
 //
 
 
-package utest;
+package jpw.libs.xPKGx.utest;
+
 
 // Imports
 //
-import junit.framework.Test;
+//import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.lang.*;
-import java.util.*;
-import java.io.*;
-import java.text.*;
+//import java.lang.*;
+//import java.util.*;
+//import java.io.*;
+//import java.text.*;
 
 
 /**
- *  Unit Test for class tJUnit.java
+ * Unit Test for class tJUnit_xREPLACEMEx.java
+ *
+ * FIXME:
+ * You should probably upcase the first character of this file, in keeping
+ * with Java naming conventions.
  *
  *
- * Created: Fri Aug  6 15:12:34 2004
- *
- * @author <a href="mailto:candide@tloen.vslannet">John Weiss</a>
+ * @author John Weiss</a>
  * @version 1.0
  */
-public class tJUnit extends TestCase
+public class tJUnit_xREPLACEMEx extends TestCase
 {
     //----------
     //
@@ -50,6 +53,7 @@ public class tJUnit extends TestCase
 
     // Leave in main program files to incorporate version numbers into the
     // code.
+    @SuppressWarnings("unused")
     private static final String __ID__=
     "$Id$";
 
@@ -82,11 +86,11 @@ public class tJUnit extends TestCase
 
 
     /**
-     * Creates a new <code>tJUnit</code> instance.
+     * Creates a new <code>tJUnit_xREPLACEMEx</code> instance.
      *
      * @param name test name
      */
-    public tJUnit (String name)
+    public tJUnit_xREPLACEMEx (String name)
     {
         super(name);
     }
@@ -94,29 +98,33 @@ public class tJUnit extends TestCase
     /**
      * @return a <code>TestSuite</code>
      */
-    public static TestSuite suite()
+    static public TestSuite suite()
     {
         TestSuite suite = new TestSuite ();
-        suite.addTest(new tJSFolderWriterStack("tTest"));
+        suite.addTest(new tJUnit_xREPLACEMEx("tTest"));
+        suite.addTest(new tJUnit_xREPLACEMEx("tOtherTest"));
         return suite;
     }
 
     /**
      * Entry point
      */
-    public static void main(String[] args)
+    static public void main(String[] args)
     {
         for (int i=0; i < args.length; ++i)
         {
             if ("-h".equals(args[i]) || "--help".equals(args[i])) {
-                System.out.println("usage: tJUnit [--verbose]\n");
+                System.out.println("usage: tJUnit_xREPLACEMEx [--verbose]\n");
                 return;
             } // else
             if ("--verbose".equals(args[i])) {
                 verbose = true;
             }
         }
-        junit.textui.TestRunner.run(suite());
+        // Console mode:
+//        junit.textui.TestRunner.run(suite());
+        // ...or, for the Swing interface:
+//        junit.textui.TestRunner.run(tJUnit_xREPLACEMEx.class);
     }
 
 
@@ -130,6 +138,12 @@ public class tJUnit extends TestCase
     public void tTest()
     {
         printTestName("A description.");
+    }
+
+
+    public void tOtherTest()
+    {
+        printTestName("A second test.");
     }
 
 

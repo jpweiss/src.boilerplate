@@ -1,5 +1,5 @@
 // -*- Java -*-
-// Implementation of class xFOOx
+// Implementation of interface xFOOx
 //
 // Copyright (C) 2011 by John Weiss
 // This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-// $Id$
+// $Id: javaSrc.java 2087 2010-12-30 22:58:59Z candide $
 //
 
 
@@ -55,7 +55,7 @@ import java.text.*;
  * @author John Weiss
  * @version 1.0
  */
-public class xFOOx
+public interface xFOOx
 {
     //----------
     //
@@ -63,30 +63,17 @@ public class xFOOx
     //
     //----------
 
-    // Leave in main program files to incorporate version numbers into the
-    // code.
-    @SuppressWarnings("unused")
-    private static final String __ID__=
-    "$Id$";
+    // N.B.:  The String __ID__ field should never be part of an Interface.
+    // All member constants in an Interface are implicitly 'public'.
+    // [You can remove this comment.]
 
-
+    public static final long CONST=42;
     public static final String OTHER_CONST="foo";
 
 
     //--------------
     //
-    // Member Fields
-    //
-    //--------------
-
-    private String myField = null;
-    public byte nCounterField = 0;
-
-
-
-    //--------------
-    //
-    // Member Classes
+    // Member Classes & Interfaces
     //
     //--------------
 
@@ -99,54 +86,26 @@ public class xFOOx
 
     //----------------
     //
-    // Main
-    //
-    //----------------
-
-
-    static public void main(String[] args)
-    {
-    }
-
-
-    //----------------
-    //
     // Methods
     //
     //----------------
-
-    //
-    // Construction
-    //
-
-    /**
-     * Default Constructor.
-     */
-    public xFOOx()
-    {
-    }//end xFOOx()
-
-
-    /**
-     * Constructor.
-     */
-    public xFOOx(int someParam)
-    {
-    }//end xFOOx()
-
-
-    //
-    // Public Methods
-    //
 
 
     /**
      *
      */
-    public void foo()
-        throws Exception
-    {
-    }
+    public abstract void foo()
+        throws Exception;
+    // N.B.:  All Interface methods are implicitly 'public' and 'abstract'.
+    // These keywords are, therefore, not necessary, as shown below.
+    // The member methods can also be declared 'strictfp'.
+    // [You can remove this comment.]
+
+
+    /**
+     *
+     */
+    public abstract void bar();
 
 
     //
@@ -157,32 +116,12 @@ public class xFOOx
     /**
      *
      */
-    public String getMyField()
-    {
-        return myField;
-    }
+    String get_myField();
 
     /**
      *
      */
-    public String setMyField()
-    {
-        return myField;
-    }
-
-
-    //
-    // Private Methods
-    //
-
-
-    /**
-     *
-     */
-    private void bar()
-        throws Exception
-    {
-    }
+    String set_myField();
 
 
 }
