@@ -13,8 +13,6 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-// $Id$
-//
 
 
 package xPKGx;
@@ -34,24 +32,29 @@ import java.text.*;
 
 
 /**
- * JavaDoc goes here.  Don't forget to use <p> for paragraph breaks.
- * <p>
+ * JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for paragraph
+ * breaks.
  *
+ * <p>
  * Here's a code sample:
- * <br>
+ * <br/>
  * <pre>
  * String x="";
  * Boolean flag = new Boolean(false);
  * </pre>
+ * </p>
  *
+ * <p>
  * Use HTML markup for bold/italics/emphasized.  Use <code>code</code> for
  * inlined code samples.
- * <p>
+ * </p>
  *
+ * <p>
  * Here is an example of a link: {@link java.util.Properties Properties}.
  * This references a member: {@link #foo}
  * This references a member in another class: {@link java.lang.System#in}
- *
+ * </p>
+ * 
  * @author John Weiss
  * @version 1.0
  */
@@ -69,19 +72,10 @@ public class xFOOx
     private static final String __ID__=
     "$Id$";
 
+    // Keep Eclipse Happy
+    private static final long serialVersionUID=0L; // TBC:  Boilerplate val.
 
     public static final String OTHER_CONST="foo";
-
-
-    //--------------
-    //
-    // Member Fields
-    //
-    //--------------
-
-    private String myField = null;
-    public byte nCounterField = 0;
-
 
 
     //--------------
@@ -93,20 +87,19 @@ public class xFOOx
     @SuppressWarnings("serial")
     static public class MyException extends Exception
     {
-        MyException(String mesg) { super(mesg); }
+        public MyException(String mesg) { super(mesg); }
     }
 
 
-    //----------------
+    //--------------
     //
-    // Main
+    // Member Fields
     //
-    //----------------
+    //--------------
 
+    private String m__myField = null;
+    public byte m__nCounterField = 0;
 
-    static public void main(String[] args)
-    {
-    }
 
 
     //----------------
@@ -159,15 +152,15 @@ public class xFOOx
      */
     public String getMyField()
     {
-        return myField;
+        return m__myField;
     }
 
     /**
      *
      */
-    public String setMyField()
+    public void setMyField(String nuField)
     {
-        return myField;
+        m__myField = nuField;
     }
 
 
@@ -178,11 +171,11 @@ public class xFOOx
 
     /**
      *
-     */
     private void bar()
         throws Exception
     {
     }
+     */
 
 
 }

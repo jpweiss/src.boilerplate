@@ -34,24 +34,29 @@ import java.text.*;
 
 
 /**
- * JavaDoc goes here.  Don't forget to use <p> for paragraph breaks.
- * <p>
+ * JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for paragraph
+ * breaks.
  *
+ * <p>
  * Here's a code sample:
- * <br>
+ * <br/>
  * <pre>
  * String x="";
  * Boolean flag = new Boolean(false);
  * </pre>
+ * </p>
  *
+ * <p>
  * Use HTML markup for bold/italics/emphasized.  Use <code>code</code> for
  * inlined code samples.
- * <p>
+ * </p>
  *
+ * <p>
  * Here is an example of a link: {@link java.util.Properties Properties}.
  * This references a member: {@link #foo}
  * This references a member in another class: {@link java.lang.System#in}
- *
+ * </p>
+ * 
  * @author John Weiss
  * @version 1.0
  */
@@ -121,7 +126,7 @@ public interface xFOOx
     /**
      *
      */
-    String set_myField();
+    void set_myField(String x);
 
 
 }
