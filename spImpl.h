@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // Header file for class xFOOx
 //
-// Copyright (C) 2011 by John Weiss
+// Copyright (C) 2012 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
 // "LICENSE" in the source code archive.

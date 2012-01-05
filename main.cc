@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // Implementation of: ????
 //
-// Copyright (C) 2011 by John Weiss
+// Copyright (C) 2012 by John Weiss
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the Artistic License, included as the file
 // "LICENSE" in the source code archive.
@@ -62,7 +62,7 @@ using std::flush;
 //TODO// Uncomment, modify, or remove as needed.
 /*
 namespace g__ {
- const string CopyrightInfo="Copyright (C) 2011 by John Weiss\n"
+ const string CopyrightInfo="Copyright (C) 2012 by John Weiss\n"
      "This program is free software; you can redistribute it and/or modify\n"
      "it under the terms of the Artistic License.\n"
      "\n"
