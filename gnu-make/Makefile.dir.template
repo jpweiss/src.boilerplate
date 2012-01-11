@@ -138,8 +138,9 @@ utests.all: src.all
 
 # Packaging
 #
+include make.vars.mk
 include make.tar_n_doc.mk
-#T# Remove the above if this isn't the toplevel Makefile.
+#T# Remove the above 2 lines if this isn't the toplevel Makefile.
 
 
 #################
