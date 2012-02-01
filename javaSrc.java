@@ -54,7 +54,7 @@ import java.text.*;
  * This references a member: {@link #foo}
  * This references a member in another class: {@link java.lang.System#in}
  * </p>
- * 
+ *
  * @author John Weiss
  * @version 1.0
  */
@@ -71,6 +71,8 @@ public class xFOOx
     @SuppressWarnings("unused")
     private static final String __ID__=
     "$Id$";
+    // FIXME:  Don't forget to do <code>svn propset svn:keywords "Id"</code>
+    // on the new file if you've added it through Eclipse!
 
     // Keep Eclipse Happy
     private static final long serialVersionUID=0L; // TBC:  Boilerplate val.
@@ -84,6 +86,10 @@ public class xFOOx
     //
     //--------------
 
+
+    /**
+     *
+     */
     @SuppressWarnings("serial")
     static public class MyException extends Exception
     {
@@ -96,6 +102,7 @@ public class xFOOx
     // Member Fields
     //
     //--------------
+
 
     private String m__myField = null;
     public byte m__nCounterField = 0;
@@ -111,6 +118,7 @@ public class xFOOx
     //
     // Construction
     //
+
 
     /**
      * Default Constructor.

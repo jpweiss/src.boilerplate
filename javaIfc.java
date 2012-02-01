@@ -17,6 +17,8 @@
 //
 
 
+// FIXME:  Don't forget to do <code>svn propset svn:keywords "Id"</code>
+// on the new file if you've added it through Eclipse!
 package xPKGx;
 
 
