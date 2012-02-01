@@ -151,7 +151,7 @@ public class xFOOx
 
 
     //
-    // Access Methods
+    // Accessors
     //
 
 

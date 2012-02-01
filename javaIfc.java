@@ -116,7 +116,7 @@ public interface xFOOx
 
 
     //
-    // Access Methods
+    // Accessors
     //
 
 
