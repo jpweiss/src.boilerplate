@@ -13,7 +13,7 @@
 ## You should have received a copy of the file "LICENSE", containing
 ## the License John Weiss originally placed this program under.
 ##
-## $Id$
+## $Id: script.m 2339 2012-01-05 01:17:22Z candide $
 #############
 1; # Required to distinguish this from a function-file
 

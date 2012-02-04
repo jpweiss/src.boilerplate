@@ -13,7 +13,7 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-// $Id: javaSrc.java 2087 2010-12-30 22:58:59Z candide $
+// $Id$
 //
 
 
