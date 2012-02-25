@@ -1,5 +1,6 @@
 // -*- Java -*-
-// JUnit Test for class tJUnit_xREPLACEMEx
+// Implementation of class TJUnit3_xREPLACEMEx:
+// A JUnit Test for class xCLASS_BEING_TESTEDx
 //
 // Copyright (C) 2012 by John Weiss
 // This program is free software; you can redistribute it and/or modify
@@ -13,37 +14,64 @@
 // You should have received a copy of the file "LICENSE", containing
 // the License John Weiss originally placed this program under.
 //
-// $Id$
-//
 
 
-package jpw.libs.xPKGx.utest;
+package jpw.utests.xPKGx;
 
 
 // Imports
 //
-//import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+//import junit.framework.Test;
 
+// FIXME:  Uncomment whichever ones you need; remove the rest.
 //import java.lang.*;
 //import java.util.*;
 //import java.io.*;
 //import java.text.*;
 
+// FIXME:  Your Imports Go Here
+import jpw.libs.xPACKAGEx.xWITHx.xCLASSESx.xBEINGx.xTESTEDx.*;
+// FIXME:  End local lib imports
+
+import jpw.utests.TJwJUnitTools;
+
+import static jpw.utests.TJwJUnitTools.requireNonNull;
+import static jpw.utests.TJwJUnitTools.utestRng;
+
+import static jpw.utests.TJwJUnitTools.printTestName;
+import static jpw.utests.TJwJUnitTools.printEndOfTest;
+
+
+//
+// The Public Class
+//
+
 
 /**
- * Unit Test for class tJUnit_xREPLACEMEx.java
+ * JUnit (v3) Test for class TJUnit3_xREPLACEMEx.
  *
- * FIXME:
- * You should probably upcase the first character of this file, in keeping
- * with Java naming conventions.
+ * <p>
+ * FIXME:  Everything below are just notes for implementers.  Remove them and
+ * replace with whatever you want.
+ * </p>
+ *
+ * This file is designed for use with JUnit v3.
+ *
+ * <p>
+ * Naming:  Use one of the following naming conventions:
+ * <pre>
+ * - T{ClassBeingTested}
+ * - Tju{ClassBeingTested}
+ * </pre>
+ * </p>
  *
  *
- * @author John Weiss</a>
+ * @author John Weiss
  * @version 1.0
  */
-public class tJUnit_xREPLACEMEx extends TestCase
+public class TJUnit3_xREPLACEMEx extends TestCase
 {
     //----------
     //
@@ -67,6 +95,7 @@ public class tJUnit_xREPLACEMEx extends TestCase
     //
     //--------------
 
+
     public static boolean verbose = false;
 
 
@@ -75,6 +104,7 @@ public class tJUnit_xREPLACEMEx extends TestCase
     // Member Classes
     //
     //--------------
+
 
     static public class MyException extends Exception
     {
@@ -85,15 +115,27 @@ public class tJUnit_xREPLACEMEx extends TestCase
     //======================================================================
 
 
+    //----------------
+    //
+    // Methods
+    //
+    //----------------
+
+    //
+    // Constructors & Static Public Methods
+    //
+
+
     /**
-     * Creates a new <code>tJUnit_xREPLACEMEx</code> instance.
+     * Creates a new <code>TJUnit3_xREPLACEMEx</code> instance.
      *
      * @param name test name
      */
-    public tJUnit_xREPLACEMEx (String name)
+    public TJUnit3_xREPLACEMEx (String name)
     {
         super(name);
     }
+
 
     /**
      * @return a <code>TestSuite</code>
@@ -101,10 +143,11 @@ public class tJUnit_xREPLACEMEx extends TestCase
     static public TestSuite suite()
     {
         TestSuite suite = new TestSuite ();
-        suite.addTest(new tJUnit_xREPLACEMEx("tTest"));
-        suite.addTest(new tJUnit_xREPLACEMEx("tOtherTest"));
+        suite.addTest(new TJUnit3_xREPLACEMEx("tTest"));
+        suite.addTest(new TJUnit3_xREPLACEMEx("tOtherTest"));
         return suite;
     }
+
 
     /**
      * Entry point
@@ -114,7 +157,7 @@ public class tJUnit_xREPLACEMEx extends TestCase
         for (int i=0; i < args.length; ++i)
         {
             if ("-h".equals(args[i]) || "--help".equals(args[i])) {
-                System.out.println("usage: tJUnit_xREPLACEMEx [--verbose]\n");
+                System.out.println("usage: TJUnit3_xREPLACEMEx [--verbose]\n");
                 return;
             } // else
             if ("--verbose".equals(args[i])) {
@@ -124,7 +167,7 @@ public class tJUnit_xREPLACEMEx extends TestCase
         // Console mode:
 //        junit.textui.TestRunner.run(suite());
         // ...or, for the Swing interface:
-//        junit.textui.TestRunner.run(tJUnit_xREPLACEMEx.class);
+//        junit.textui.TestRunner.run(TJUnit3_xREPLACEMEx.class);
     }
 
 
@@ -137,13 +180,13 @@ public class tJUnit_xREPLACEMEx extends TestCase
 
     public void tTest()
     {
-        printTestName("A description.");
+        printTestName(verbose, "A description.");
     }
 
 
     public void tOtherTest()
     {
-        printTestName("A second test.");
+        printTestName(verbose, "A second test.");
     }
 
 
@@ -154,12 +197,8 @@ public class tJUnit_xREPLACEMEx extends TestCase
     //----------------
 
 
-    private void printTestName(String mesg)
+    private void someOtherUtilMethod()
     {
-        if (!verbose) { return; }
-        System.out.print("\nRunning Test: \"");
-        System.out.print(mesg);
-        System.out.println("\".");
     }
 }
 
