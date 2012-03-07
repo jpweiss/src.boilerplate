@@ -167,7 +167,7 @@ public class TJUnit3_xREPLACEMEx extends TestCase
         // Console mode:
 //        junit.textui.TestRunner.run(suite());
         // ...or, for the Swing interface:
-//        junit.textui.TestRunner.run(TJUnit3_xREPLACEMEx.class);
+//        junit.swingui.TestRunner.run(TJUnit3_xREPLACEMEx.class);
     }
 
 

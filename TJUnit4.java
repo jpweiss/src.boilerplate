@@ -35,12 +35,15 @@ import static org.junit.Assume.*;
 //import java.util.*;
 //import java.io.*;
 //import java.text.*;
+//import javax.swing.*;
 
 // FIXME:  Your Imports Go Here
 import jpw.libs.xPACKAGEx.xWITHx.xCLASSESx.xBEINGx.xTESTEDx.*;
 // FIXME:  End local lib imports
 
 import jpw.utests.TJwJUnitTools;
+// FIXME:  Use this import for Swing-Based Unit Tests.
+//import jpw.utests.ui.TJwJUnitTools;
 
 import static jpw.utests.TJwJUnitTools.requireNonNull;
 import static jpw.utests.TJwJUnitTools.utestRng;
@@ -55,7 +58,7 @@ import static jpw.utests.TJwJUnitTools.printEndOfTest;
 
 
 /**
- * JUnit (v4) Tests for class TJUnit4_xREPLACEMEx.
+ * JUnit (v4) Tests for class {@link xCLASS_BEING_TESTEDx}.
  *
  * <p>
  * FIXME:  Everything below are just notes for implementers.  Remove them and
@@ -107,8 +110,10 @@ public class TJUnit4_xREPLACEMEx
     // FIXME:  Don't forget to do <code>svn propset svn:keywords "Id"</code>
     // on the new file if you've added it through Eclipse!
 
-
     public static final String OTHER_CONST="foo";
+
+    // FIXME:  For Swing-Based Unit Tests only:
+    //public static final int SHUTDOWN_DELAY_MS=10000;
 
 
     //--------------
@@ -124,14 +129,17 @@ public class TJUnit4_xREPLACEMEx
 
     public static boolean verbose = false;
 
-    @Rule
-    public TestName m__myName = new TestName();
-
 
     //
     // Private Local
     //
 
+
+    @Rule
+    private TestName m__myName = new TestName();
+
+    // FIXME:  For Swing-Based Unit Tests only:
+    //private JFrame m__mainWin = TJwJUnitTools.createMainWin();
 
     //private ComplicatedType<String, Integer,
     //                        Double, Map<String, Double>> m__testVar=null;
@@ -213,6 +221,21 @@ public class TJUnit4_xREPLACEMEx
      * </p>
      *
      * <p>
+     * <em>However:</em>
+     * <br/>
+     * Empirically, this is not true ... at least, not for ancestor classes
+     * that have no "<code>&#064;Test</code>" methods.  Only the
+     * "<code>&#064;BeforeClass</code>" methods inherited by the first child
+     * class with at least one "<code>&#064;Test</code>" are called.
+     * <br/>
+     * So, for every "<code>&#064;BeforeClass</code>" method that you
+     * override, you'll need to call your parent's implementation from your
+     * own <em>if</em> the parent has no "<code>&#064;Test</code>"s.  (To
+     * ensure proper call behavior, make the very <u>first</u> statement of
+     * your override the call to the parent's implementation.)
+     * </p>
+     *
+     * <p>
      * "<code>&#064;BeforeClass</code>" methods can throw exceptions (and have
      * a "<code>throws</code>" clause), but aren't required to.
      * </p>
@@ -224,6 +247,9 @@ public class TJUnit4_xREPLACEMEx
     public static void setUpBeforeClass()
     {
         TJwJUnitTools.IS_VERBOSE = verbose;
+
+        // FIXME:  For Swing-Based Unit Tests only:
+        //TJwJUnitTools.startSwingUnitTest(m__mainWin);
     }
 
 
@@ -241,6 +267,14 @@ public class TJUnit4_xREPLACEMEx
      * If you have a tree of test classes, the "<code>&#064;Before</code>"
      * methods are run in the same order as the
      * "<code>&#064;BeforeClass</code>" methods are.
+     * <br/>
+     * Similarly if you have ancestor classes with no
+     * "<code>&#064;Test</code>" methods, you have the same empirical
+     * behavior.  For each "<code>&#064;Before</code>" method from a
+     * non-"<code>&#064;Test</code>" parent that you override, you'll need to
+     * call your parent's implementation of that method.  (To ensure proper
+     * call behavior, make the very <u>first</u> statement of your override
+     * the call to the parent's implementation.)
      * </p>
      *
      * <p>
@@ -256,7 +290,7 @@ public class TJUnit4_xREPLACEMEx
     @Before
     public void setUp()
     {
-        printTestName(m__myName);
+        printTestName(this.getClass(), m__myName);
     }
 
 
@@ -280,6 +314,14 @@ public class TJUnit4_xREPLACEMEx
      * those for "<code>&#064;Before</code>" methods... with one exception.
      * In a class tree, "<code>&#064;After</code>" methods are called in the
      * reverse-order of "<code>&#064;Before</code>" methods.
+     * <br/>
+     * Similarly if you have ancestor classes with no
+     * "<code>&#064;Test</code>" methods, you have the same empirical
+     * behavior.  For each "<code>&#064;After</code>" method from a
+     * non-"<code>&#064;Test</code>" parent that you override, you'll need to
+     * call your parent's implementation of that method.  (To ensure proper
+     * call behavior, make the very <u>last</u> statement of your override the
+     * call to the parent's implementation.)
      * </p>
      *
      * FIXME:  This Javadoc is just information for implementers.  Feel free
@@ -290,6 +332,7 @@ public class TJUnit4_xREPLACEMEx
     @After
     public void tearDown()
     {
+        printEndOfTest(this.getClass(), m__myName);
     }
 
 
@@ -316,6 +359,23 @@ public class TJUnit4_xREPLACEMEx
      * of "<code>&#064;BeforeClass</code>" methods.
      * </p>
      *
+     * <p>
+     * <em>However:</em>
+     * <br/>
+     * Like "<code>&#064;BeforeClass</code>" methods,
+     * "<code>&#064;AfterClass</code>" methods, empirically, behave
+     * differently for ancestor classes that have no "<code>&#064;Test</code>"
+     * methods.  Only the "<code>&#064;AfterClass</code>" methods inherited by
+     * the first child class with at least one "<code>&#064;Test</code>" are
+     * called.
+     * <br/>
+     * So, for every "<code>&#064;AfterClass</code>" method that you override,
+     * you'll need to call your parent's implementation from your own
+     * <em>if</em> the parent has no "<code>&#064;Test</code>"s.  (To ensure
+     * proper call behavior, make the very <u>last</u> statement of your
+     * override the call to the parent's implementation.)
+     * </p>
+     *
      * FIXME:  This Javadoc is just information for implementers.  Feel free
      * to remove or replace it.
      *
@@ -324,6 +384,8 @@ public class TJUnit4_xREPLACEMEx
     @AfterClass
     public static void tearDownAfterClass()
     {
+        // FIXME:  For Swing-Based Unit Tests only:
+        //waitThenClose(m__mainWin, SHUTDOWN_DELAY_MS);
     }
 
 
@@ -337,6 +399,33 @@ public class TJUnit4_xREPLACEMEx
     /**
      * Test method for
      * {@link xCLASS_BEING_TESTEDx#__MethodBeingTested__}.
+     *
+     * <p>
+     * FIXME:  Everything from here on is just information for unit-test
+     * authors.  It should all be removed.
+     * </p>
+     *
+     * Some useful testing methods are listed below.
+     *
+     * @see TJwJUnitTools#safeSleep
+     * @see TJwJUnitTools#printTestName(TestName)
+     * TJwJUnitTools.printTestName(...) overloads
+     * @see TJwJUnitTools#printEndOfTest(TestName)
+     * TJwJUnitTools.printEndOfTest(...) overloads
+     * @see TJwJUnitTools#requireNonNull
+     * @see TJwJUnitTools#failedToThrow(String, Object[])
+     * TJwJUnitTools.failedToThrow(...) overloads
+     * @see TJwJUnitTools#utestRng
+     * @see TJwJUnitTools#removeRandomSubset(java.util.Map, double)
+     * TJwJUnitTools.removeRandomSubset(...) overloads
+     * @see TJwJUnitTools#getRandomSubset(java.util.Map, java.util.Map,
+     * double)
+     * TJwJUnitTools.getRandomSubset(...) oveerloads
+     * @see TJwJUnitTools#getRandomElement(List)
+     * TJwJUnitTools.getRandomElement(...) overloads
+     * @see TJwJUnitTools#getRandomKey
+     * @see jpw.libs.utests.ui.TJwJUnitTools#askUser2Verify
+     * @see jpw.libs.utests.ui.TJwJUnitTools#delayed_askUser2Verify
      */
     @Test
     public void test__MethodBeingTested__()
@@ -356,7 +445,7 @@ public class TJUnit4_xREPLACEMEx
         // 'Matcher', a JUnit4 interface described below under the
         // 'Assert.assertThat' method.
 
-        printTestName(verbose, "A description.");
+        printTestName(m__myName);
 
         // NOTE:  Ways to test:
         //
@@ -425,7 +514,7 @@ public class TJUnit4_xREPLACEMEx
      * Will only test <em>one</em> operation that throws an exception.
      * </p>
      */
-    @Test(expected = MyExpectedException.class)
+    @Test(expected = Exception.class)
     public void test__MethodBeingTested_ExpectedException_()
     {
         printTestName(verbose, "A description.");
@@ -442,7 +531,7 @@ public class TJUnit4_xREPLACEMEx
      * which is in milliseconds.
      */
     @Test(timeout = 60000)
-    public void test__MethodBeingTested_ExpectedException_()
+    public void test__MethodBeingTested_VerySlowMethodBeingTested_()
     {
         printTestName(verbose, "A description.");
         fail("Not yet implemented"); // TODO
