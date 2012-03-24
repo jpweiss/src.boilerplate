@@ -43,7 +43,7 @@ import jpw.libs.xPACKAGEx.xWITHx.xCLASSESx.xBEINGx.xTESTEDx.*;
 
 import jpw.utests.TJwJUnitTools;
 // FIXME:  Use this import for Swing-Based Unit Tests.
-//import jpw.utests.ui.TJwJUnitTools;
+//import jpw.utests.ui.*;
 
 import static jpw.utests.TJwJUnitTools.requireNonNull;
 import static jpw.utests.TJwJUnitTools.utestRng;
@@ -113,7 +113,9 @@ public class TJUnit4_xREPLACEMEx
     public static final String OTHER_CONST="foo";
 
     // FIXME:  For Swing-Based Unit Tests only:
-    //public static final int SHUTDOWN_DELAY_MS=10000;
+    //public static final int c_PRE_CLOSE_DELAY_MS = 10000;
+    //public static final String
+    //c_END_OF_TEST_MSG = "...some message...";
 
 
     //--------------
@@ -129,6 +131,10 @@ public class TJUnit4_xREPLACEMEx
 
     public static boolean verbose = false;
 
+    // FIXME:  For Swing-Based Unit Tests only:
+    //private static TJwJUnitSwingHelper m__swingTester
+    //    = new TJwJUnitSwingHelper();
+
 
     //
     // Private Local
@@ -137,9 +143,6 @@ public class TJUnit4_xREPLACEMEx
 
     @Rule
     private TestName m__myName = new TestName();
-
-    // FIXME:  For Swing-Based Unit Tests only:
-    //private JFrame m__mainWin = TJwJUnitTools.createMainWin();
 
     //private ComplicatedType<String, Integer,
     //                        Double, Map<String, Double>> m__testVar=null;
@@ -183,17 +186,6 @@ public class TJUnit4_xREPLACEMEx
      */
     public TJUnit4_xREPLACEMEx()
     {
-    }//end TJUnit4_xREPLACEMEx()
-
-
-    /**
-     * Creates a new <code>TJUnit4_xREPLACEMEx</code> instance.
-     *
-     * @param name test name
-     */
-    public TJUnit4_xREPLACEMEx(String name)
-    {
-        super(name);
     }//end TJUnit4_xREPLACEMEx()
 
 
@@ -249,7 +241,8 @@ public class TJUnit4_xREPLACEMEx
         TJwJUnitTools.IS_VERBOSE = verbose;
 
         // FIXME:  For Swing-Based Unit Tests only:
-        //TJwJUnitTools.startSwingUnitTest(m__mainWin);
+        //m__swingTester.start();
+
     }
 
 
@@ -332,6 +325,10 @@ public class TJUnit4_xREPLACEMEx
     @After
     public void tearDown()
     {
+        // FIXME:  Optional - For Swing-Based Unit Tests only:
+        //m__swingTester.removeAll();
+        //m__swingTester.pack_centerOnScreen();
+
         printEndOfTest(this.getClass(), m__myName);
     }
 
@@ -385,7 +382,11 @@ public class TJUnit4_xREPLACEMEx
     public static void tearDownAfterClass()
     {
         // FIXME:  For Swing-Based Unit Tests only:
-        //waitThenClose(m__mainWin, SHUTDOWN_DELAY_MS);
+        //m__swingTester.end(c_END_OF_TEST_MSG, false, c_PRE_CLOSE_DELAY_MS);
+        //
+        // Pass 'null' instead of c_END_OF_TEST_MSG for no pre-close
+        // JwMsgBox.
+        // Pass '0' instead of c_PRE_CLOSE_DELAY_MS for no delay.
     }
 
 
@@ -427,6 +428,7 @@ public class TJUnit4_xREPLACEMEx
      * @see jpw.libs.utests.ui.TJwJUnitTools#askUser2Verify
      * @see jpw.libs.utests.ui.TJwJUnitTools#delayed_askUser2Verify
      */
+    @Ignore("not yet implemented")
     @Test
     public void test__MethodBeingTested__()
     {
@@ -514,6 +516,7 @@ public class TJUnit4_xREPLACEMEx
      * Will only test <em>one</em> operation that throws an exception.
      * </p>
      */
+    @Ignore("not yet implemented")
     @Test(expected = Exception.class)
     public void test__MethodBeingTested_ExpectedException_()
     {
@@ -530,6 +533,7 @@ public class TJUnit4_xREPLACEMEx
      * The test fails if the method runs for longer than <em>timeout</em>,
      * which is in milliseconds.
      */
+    @Ignore // Note that @Ignore doesn't require args.
     @Test(timeout = 60000)
     public void test__MethodBeingTested_VerySlowMethodBeingTested_()
     {
