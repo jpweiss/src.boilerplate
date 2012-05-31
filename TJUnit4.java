@@ -447,8 +447,6 @@ public class TJUnit4_xREPLACEMEx
         // 'Matcher', a JUnit4 interface described below under the
         // 'Assert.assertThat' method.
 
-        printTestName(m__myName);
-
         // NOTE:  Ways to test:
         //
         // Typically, you'll use one of the static member methods of
