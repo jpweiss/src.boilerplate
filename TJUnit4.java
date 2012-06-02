@@ -137,12 +137,18 @@ public class TJUnit4_xREPLACEMEx
 
 
     //
-    // Private Local
+    // Public Local
     //
 
 
     @Rule
-    private TestName m__myName = new TestName();
+    public final TestName m__myName = new TestName();
+
+
+    //
+    // Private Local
+    //
+
 
     //private ComplicatedType<String, Integer,
     //                        Double, Map<String, Double>> m__testVar=null;
@@ -240,9 +246,14 @@ public class TJUnit4_xREPLACEMEx
     {
         TJwJUnitTools.IS_VERBOSE = verbose;
 
+        // For printing out the initial seed before starting any tests.
+        utestRng();
+        // For setting the seed when debugging:
+        //utestRng(0x1DBE43C7EB78E9E3L);
+        // [N.B.:  Change the seed value to what you need it to be.]
+
         // FIXME:  For Swing-Based Unit Tests only:
         //m__swingTester.start();
-
     }
 
 
