@@ -246,6 +246,14 @@ public class TJUnit4_xREPLACEMEx
     {
         TJwJUnitTools.IS_VERBOSE = verbose;
 
+        // Enable Logging.  [Uncomment and modify the logging level as
+        // needed.]
+        TJwJUnitTools.initLogging();
+        // FIXME::Change:  use the actual class in the next line, then remove
+        // this comment.
+        TJwJUnitTools.configureLogging(TJUnit4.class);
+        //JwLog4jUtils.setRootLoggingLevel(Level.ALL);
+
         // For printing out the initial seed before starting any tests.
         utestRng();
         // For setting the seed when debugging:
