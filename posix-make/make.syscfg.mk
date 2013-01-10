@@ -10,7 +10,7 @@
 # optimization flags, since these usually differ from platform to platform.
 #
 #
-# Copyright (C) 2012 by John P. Weiss
+# Copyright (C) 2011 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file
@@ -23,7 +23,7 @@
 # You should have received a copy of the file "LICENSE", containing
 # the License John Weiss originally placed this program under.
 #
-# $Id$
+# RCS $Id$
 ##########
 #
 # Architecture.  Not used by all compilers.
@@ -31,13 +31,17 @@
 ##########
 
 
-ARCH:=k6-2
-ARCH:=i586
-ARCH:=athlon-xp
+ARCH:=generic
+#ARCH:=pentium4
+#ARCH:=athlon #athlon-4 #athlon-xp #athlon-mp
+#ARCH:=core2
+#ARCH:=athlon64-sse3 #opteron-sse3
+#ARCH:=pentium-m
+
 
 # General architecture-specific compiler flags.
 ARCHFLAGS:= # -m128bit-long-double
-# Others, possibly set by "-march" or "-mcpu":
+# Others, possibly set by "-march" or "-mtune":
 # -m3dnow -mmmx
 
 
@@ -56,7 +60,7 @@ ARCHFLAGS:= # -m128bit-long-double
 # Use non-expanding defn. for the language flags.  Set them to the special
 # variable, $(COMPILE_TYPE), which we'll define in the main makefile
 CFLAGS = $(COMPILE_TYPE)
-CXXFLAGS = $(COMPILE_TYPE)
+CXXFLAGS = # Leave empty
 ##FFLAGS = $(COMPILE_TYPE)
 
 
@@ -67,24 +71,41 @@ CXXFLAGS = $(COMPILE_TYPE)
 ##########
 
 
-CC:=gcc
-CCC:=g++
-CPP:=cpp
-##FC:=g77
+# For using an alternate compiler version:
+GVER=
+#LDFLAGS +=
+
+CC:=gcc$(GVER)
+CXX:=g++$(GVER)
+CCC:=$(CXX)
+CPP:=cpp$(GVER)
+##FC:=gfortran$(GVER)
+GCOV:=gcov$(GVER)
+GCOV_OPTS:=
+
+# Note:  -march implies & sets -mtune
+#        However, '-march=generic' is not a valid; we need to use -mtune
+#        instead.
+ARCH_OPT:=-march=$(ARCH)
+
+## if $(ARCH)==generic, uncomment the following and comment out the previous
+## line.
+#ARCH_OPT:=-mtune=generic
+
 
 # Add the compiler architecture flags to all compilers that use it.
-CC += -mcpu=$(ARCH) -march=$(ARCH)
-CCC += -mcpu=$(ARCH) -march=$(ARCH)
-FC += -mcpu=$(ARCH) -march=$(ARCH)
-
-## GNU-make special:  These next two variables are part of every implicit
-## command.
-##TARGET_ARCH:=-mcpu=$(ARCH) -march=$(ARCH)
-##TARGET_MACH:=$(TARGET_ARCH)
+CC += $(ARCH_OPT)
+CCC += $(ARCH_OPT)
+FC += $(ARCH_OPT)
 
 # Some aliases.
 ##F77=$(FC)
 ##F90=$(FC) -ff90
+
+# Cross-linking libraries
+##F_LIBS:=-lg2c # Linux g77, compat-gcc v3.2
+##F_LIBS:=-lgfortran # Linux gfortran, gcc v4
+##F_LIBS:=-lfortran # Solaris; IRIX
 
 
 ##########
@@ -94,19 +115,39 @@ FC += -mcpu=$(ARCH) -march=$(ARCH)
 ##########
 
 
-OPTIMIZE:=#-O3 -funroll-loops -fmerge-constants
-# Flags for faster math.  Place after the "-O".
-#     -mieee-fp -malign-double -mwide-multiply $(ARCHFLAGS)
-#
+OPTIMIZE:=-O3 -mieee-fp -malign-double \
+	-fexpensive-optimizations -fprefetch-loop-arrays \
+	-funroll-loops -fpeel-loops -funswitch-loops -frerun-loop-opt \
+	-fno-caller-saves
+# Other optimizations:
+#     -mfpmath=sse
+#     -msse2
+#     -msse3  # for -march=core2 only
+#     -maccumulate-outgoing-args
+#     -minline-all-stringops
+#  We'd need to try these out, one by one, and see how they improve
+#  performance.
 # Agressive Inlining:
-#     -finline-functions -finline-limit=N #Default==600
+#     -finline-limit=N #Default==600
+#     --param large-function-growth=M #Default 100
+#     --param inline-unit-growth=L #Default 50
 
-DEBUG:=-ggdb3
+DEBUG:=-g3 -ggdb3 -DDEBUG
+DISABLE_INLINE:=-fno-inline -fno-default-inline
 #Other GCC debugging options: -save-temps -time
+#Those last two return information about the compilation.
 
-GPROF:=-pg
-GCOV:=-ftest-coverage
-PROFILE:=$(GPROF) $(GCOV)
+# Disable all optimizations for (most) regression-testing.
+REGRESSION:=-O0 $(DISABLE_INLINE)
+
+GPROF_GCC:=-pg
+GCOV_GCC:=-fprofile-arcs -ftest-coverage
+PROFILE:=$(GPROF_GCC) $(GCOV_GCC)
+
+# Google Perftools Support:
+CFLAGS_TCMALLOC=-fno-builtin-malloc -fno-builtin-calloc \
+	-fno-builtin-realloc -fno-builtin-free
+LIB_TCMALLOC=-ltcmalloc
 
 # Add the architecture-specific flags to each compiler that takes them.  We
 # will append "CFLAGS" onto "CXXFLAGS" later.
@@ -124,6 +165,8 @@ CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
 #     All remaining -Wxxx options are not included in "-Wall"
 # Other useful C/C++ flags:
 #     -pedantic
+# This next one can get very noisy:
+#     -Winline
 # Other Useful non"-Wall" options:
 #     -Wunreachable-code -Wno-deprecated-declarations
 # Uncomment this for applications in which we need to treat the floating point
@@ -142,7 +185,7 @@ CXXFLAGS += -felide-constructors \
 #                            make sure...
 # Other g++ flags:
 #     -Wno-deprecated:  Disable warnings about older, non-std-compliant
-#                       g++-ism.
+#                       G++-ism.
 # May not work well with STL implementations (makes too much noise)
 #	-fhonor-std -Weffc++
 
@@ -151,13 +194,15 @@ CXXFLAGS += -felide-constructors \
 #
 
 # Used to generate the *.d  dependency files (under gcc):
-C_DEPFLAGS:=-MMD -MP
-
-# Integer default size
-##FFLAGS += -i4
+C_DEPFLAGS:=-MM -MP
+# Use this to generate a *.d file as a side-effect of normal compliation
+#CFLAGS += -MMD -MP
 
 # Make C++ include the same flags as C.
 CXXFLAGS += $(CFLAGS)
+
+# Integer default size
+##FFLAGS += -i4
 
 
 # Flags for building static libraries
@@ -175,9 +220,18 @@ ARFLAGS=crv
 ##########
 
 
-COMPILE_TYPE:=
-COMPILE_TYPE:=$(DEBUG) # $(PROFILE)
-COMPILE_TYPE:=$(OPTIMIZE) # $(PROFILE)
+#DEBUG_FLAGS:=-DDEBUG
+#COMPILE_TYPE:=
+#LDFLAGS += $(PROFILE)
+#COMPILE_TYPE:=$(DEBUG) #$(PROFILE) #$(DEBUG_FLAGS)
+#COMPILE_TYPE:=$(DEBUG) $(DISABLE_INLINE) #$(DEBUG_FLAGS)
+#LDFLAGS += -lefence
+#LDFLAGS += -ldmalloc -ldmallocxx
+#CFLAGS += $(CFLAGS_TCMALLOC)
+#LDFLAGS += $(LIB_TCMALLOC)
+#COMPILE_TYPE:=$(OPTIMIZE)
+#WARNING# Use this for the regression tests:
+COMPILE_TYPE:=$(REGRESSION)
 
 
 #################

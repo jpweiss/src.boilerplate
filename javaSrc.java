@@ -32,8 +32,8 @@ import java.text.*;
 
 
 /**
- * JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for paragraph
- * breaks.
+ * TODO::Add:  JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for
+ * paragraph breaks.
  *
  * <p>
  * Here's a code sample:
@@ -55,6 +55,16 @@ import java.text.*;
  * This references a member in another class: {@link java.lang.System#in}
  * </p>
  *
+ * <p>
+ * Stylistic Note:
+ * <br/>
+ * <code>public static final</code> for fields.
+ * <code>[final] static public</code> for methods.
+ * <code>abstract public</code> for methods.
+ * <code>[static] public (abstract|final) (class|interface|enum)</code>
+ * for types.
+ * </p>
+ *
  * @author John Weiss
  * @version 1.0
  */
@@ -69,8 +79,8 @@ public class xFOOx
     // Leave in main program files to incorporate version numbers into the
     // code.
     @SuppressWarnings("unused")
-    private static final String __ID__=
-    "$Id$";
+    private static final String __ID__
+    ="$Id$";
     // FIXME:  Don't forget to do <code>svn propset svn:keywords "Id"</code>
     // on the new file if you've added it through Eclipse!
 
@@ -93,7 +103,30 @@ public class xFOOx
     @SuppressWarnings("serial")
     static public class MyException extends Exception
     {
-        public MyException(String mesg) { super(mesg); }
+        public MyException(final String mesg) { super(mesg); }
+    }
+
+
+    /**
+     *
+     */
+    static public enum MyEnum
+    {
+        TAG1(-1),
+        TAG2(1);
+
+        //----------------
+        // Non-Tag Members
+        //----------------
+
+        // FIXME::Remove:  If not making a bit-flag enum
+        //private final EnumBits<MyEnum> m__val;
+        // FIXME::Change:  Remove or change the type appropriately
+        private final int m__val;
+
+        private MyEnum(final int val) { m__val = val; }
+
+        public int value() { return m__val; }
     }
 
 
@@ -106,7 +139,6 @@ public class xFOOx
 
     private String m__myField = null;
     public byte m__nCounterField = 0;
-
 
 
     //----------------
@@ -131,7 +163,7 @@ public class xFOOx
     /**
      * Constructor.
      */
-    public xFOOx(int someParam)
+    public xFOOx(final int someParam)
     {
     }//end xFOOx()
 
@@ -166,7 +198,7 @@ public class xFOOx
     /**
      *
      */
-    public void setMyField(String nuField)
+    public void setMyField(final String nuField)
     {
         m__myField = nuField;
     }
@@ -184,8 +216,6 @@ public class xFOOx
     {
     }
      */
-
-
 }
 
 

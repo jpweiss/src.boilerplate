@@ -36,8 +36,8 @@ import java.text.*;
 
 
 /**
- * JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for paragraph
- * breaks.
+ * TODO::Add:  JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for
+ * paragraph breaks.
  *
  * <p>
  * Here's a code sample:
@@ -58,7 +58,7 @@ import java.text.*;
  * This references a member: {@link #foo}
  * This references a member in another class: {@link java.lang.System#in}
  * </p>
- * 
+ *
  * @author John Weiss
  * @version 1.0
  */
@@ -84,10 +84,11 @@ public interface xFOOx
     //
     //--------------
 
+
     @SuppressWarnings("serial")
     static public class MyException extends Exception
     {
-        MyException(String mesg) { super(mesg); }
+        MyException(final String mesg) { super(mesg); }
     }
 
 
@@ -106,13 +107,16 @@ public interface xFOOx
     // N.B.:  All Interface methods are implicitly 'public' and 'abstract'.
     // These keywords are, therefore, not necessary, as shown below.
     // The member methods can also be declared 'strictfp'.
+    //
+    // Additionally, Interface methods cannot be 'static' or 'final'.
+    //
     // [You can remove this comment.]
 
 
     /**
      *
      */
-    public abstract void bar();
+    abstract public void bar();
 
 
     //
@@ -125,12 +129,11 @@ public interface xFOOx
      */
     String get_myField();
 
+
     /**
      *
      */
     void set_myField(String x);
-
-
 }
 
 

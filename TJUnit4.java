@@ -16,7 +16,7 @@
 //
 
 
-package jpw.libs.xPKGx.utest;
+package jpw.utest.xPKGx;
 
 
 // Imports
@@ -105,8 +105,8 @@ public class TJUnit4_xREPLACEMEx
     // Leave in main program files to incorporate version numbers into the
     // code.
     @SuppressWarnings("unused")
-    private static final String __ID__=
-    "$Id$";
+    private static final String __ID__
+    ="$Id$";
     // FIXME:  Don't forget to do <code>svn propset svn:keywords "Id"</code>
     // on the new file if you've added it through Eclipse!
 
@@ -134,6 +134,18 @@ public class TJUnit4_xREPLACEMEx
     // FIXME:  For Swing-Based Unit Tests only:
     //private static TJwJUnitSwingHelper m__swingTester
     //    = new TJwJUnitSwingHelper();
+
+    private static final Level ms__defaultRootLoggingLevel =
+        org.apache.log4j.Level.INFO; // OR:  org.apache.log4j.Level.ALL;
+    // FIXME::Change:  Use the actual class in the next line, then remove
+    // this comment.
+    private static final Class<?> ms__ourClass = TJUnit4.class;
+
+    // Enable Logging.
+    // FIXME::Change:  If you're not using a logger in your unit test, remove
+    // all of this.
+    //private static final Logger ms__logger
+    //    = TJwJUnitTools.configureLogging(ms__ourClass);
 
 
     //
@@ -167,7 +179,7 @@ public class TJUnit4_xREPLACEMEx
     @SuppressWarnings("serial")
     static public class MyException extends Exception
     {
-        MyException(String mesg) { super(mesg); }
+        MyException(final String mesg) { super(mesg); }
     }
 
 
@@ -242,17 +254,18 @@ public class TJUnit4_xREPLACEMEx
      * to remove or replace it.
      */
     @BeforeClass
-    public static void setUpBeforeClass()
+    static public void setUpBeforeClass()
     {
         TJwJUnitTools.IS_VERBOSE = verbose;
+        // Uncomment to use a short-form log file name.
+        // WARNING:  Never leave this uncommented when checking in!
+        //TJwJUnitTools.IS_DEBUGGING_RUN = true;
 
-        // Enable Logging.  [Uncomment and modify the logging level as
-        // needed.]
-        TJwJUnitTools.initLogging();
-        // FIXME::Change:  use the actual class in the next line, then remove
-        // this comment.
-        TJwJUnitTools.configureLogging(TJUnit4.class);
-        //JwLog4jUtils.setRootLoggingLevel(Level.ALL);
+        // FIXME::Change:  Use the actual class in the next line, then remove
+        // this comment.  If you're using a Logger in your unit test, however,
+        // remove this comment and the next line.
+        TJwJUnitTools.configureLogging(ms__ourClass);
+        //JwLog4jUtils.setRootLoggingLevel(ms__defaultRootLoggingLevel);
 
         // For printing out the initial seed before starting any tests.
         utestRng();
@@ -302,7 +315,11 @@ public class TJUnit4_xREPLACEMEx
     @Before
     public void setUp()
     {
-        printTestName(this.getClass(), m__myName);
+        printTestName(ms__ourClass, m__myName);
+        // FIXME::Change: If you're using a Logger, replace the line above
+        // with the next line.  Otherwise, remove this comment and the
+        // following line.
+        //logTestName(ms__logger, ms__ourClass, m__myName);
     }
 
 
@@ -348,7 +365,11 @@ public class TJUnit4_xREPLACEMEx
         //m__swingTester.removeAll();
         //m__swingTester.pack_centerOnScreen();
 
-        printEndOfTest(this.getClass(), m__myName);
+        printEndOfTest(ms__ourClass, m__myName);
+        // FIXME::Change: If you're using a Logger, replace the line above
+        // with the next line.  Otherwise, remove this comment and the
+        // following line.
+        //logEndOfTest(ms__logger, ms__ourClass, m__myName);
     }
 
 
@@ -398,7 +419,7 @@ public class TJUnit4_xREPLACEMEx
      * @see #setUpBeforeClass
      */
     @AfterClass
-    public static void tearDownAfterClass()
+    static public void tearDownAfterClass()
     {
         // FIXME:  For Swing-Based Unit Tests only:
         //m__swingTester.end(c_END_OF_TEST_MSG, false, c_PRE_CLOSE_DELAY_MS);
@@ -449,7 +470,7 @@ public class TJUnit4_xREPLACEMEx
      */
     @Ignore("not yet implemented")
     @Test
-    public void test__MethodBeingTested__()
+    final public void test__MethodBeingTested__()
     {
         // NOTE:  Nonfatal Preconditions.
         //
@@ -535,7 +556,7 @@ public class TJUnit4_xREPLACEMEx
      */
     @Ignore("not yet implemented")
     @Test(expected = Exception.class)
-    public void test__MethodBeingTested_ExpectedException_()
+    final public void test__MethodBeingTested_ExpectedException_()
     {
         printTestName(verbose, "A description.");
         fail("Not yet implemented"); // TODO
@@ -552,7 +573,7 @@ public class TJUnit4_xREPLACEMEx
      */
     @Ignore // Note that @Ignore doesn't require args.
     @Test(timeout = 60000)
-    public void test__MethodBeingTested_VerySlowMethodBeingTested_()
+    final public void test__MethodBeingTested_VerySlowMethodBeingTested_()
     {
         printTestName(verbose, "A description.");
         fail("Not yet implemented"); // TODO

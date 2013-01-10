@@ -82,8 +82,8 @@ public class TJUnit3_xREPLACEMEx extends TestCase
     // Leave in main program files to incorporate version numbers into the
     // code.
     @SuppressWarnings("unused")
-    private static final String __ID__=
-    "$Id$";
+    private static final String __ID__
+    ="$Id$";
 
 
     public static final String OTHER_CONST="foo";
@@ -108,7 +108,7 @@ public class TJUnit3_xREPLACEMEx extends TestCase
 
     static public class MyException extends Exception
     {
-        MyException(String mesg) { super(mesg); }
+        MyException(final String mesg) { super(mesg); }
     }
 
 
@@ -131,7 +131,7 @@ public class TJUnit3_xREPLACEMEx extends TestCase
      *
      * @param name test name
      */
-    public TJUnit3_xREPLACEMEx (String name)
+    public TJUnit3_xREPLACEMEx(final String name)
     {
         super(name);
     }

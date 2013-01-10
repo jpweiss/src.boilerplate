@@ -36,8 +36,8 @@ import jpw.libs.progtools.*;
 
 
 /**
- * JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for paragraph
- * breaks.
+ * TODO::Add:  JavaDoc goes here.  Don't forget to use \<p\>...\</p\> for
+ * paragraph breaks.
  *
  * <p>
  * Here's a code sample:
@@ -58,7 +58,7 @@ import jpw.libs.progtools.*;
  * This references a member: {@link #foo}
  * This references a member in another class: {@link java.lang.System#in}
  * </p>
- * 
+ *
  * @author John Weiss
  * @version 1.0
  */
@@ -73,8 +73,8 @@ public final class xFOOx
     // Leave in main program files to incorporate version numbers into the
     // code.
     @SuppressWarnings("unused")
-    private static final String __ID__=
-        "$Id$";
+    private static final String __ID__
+    ="$Id$";
 
     // [TODO:  BEGIN:  Remove this if not using ProgramProperties]
 
@@ -125,6 +125,7 @@ public final class xFOOx
     //
     //--------------
 
+
     /**
      * A POJO-class for holding this program's options.
      *
@@ -147,6 +148,7 @@ public final class xFOOx
     //
     //--------------
 
+
     private final ProgramProperties m__optsParser =
         new ProgramProperties(OUR_NAME, OPTION_SYNTAX_DEFNS,
                               makeCfgfile(CFGFILE,
@@ -158,7 +160,6 @@ public final class xFOOx
     private final File m__cfgfileFullPath = makeCfgfile(PROPFILE,
                                                         PROPFILE_PATHSPEC);
     private final Options m__opts = new Options();
-
 
 
     //----------------
@@ -183,6 +184,7 @@ public final class xFOOx
     // Construction
     //
 
+
     /**
      * Default Constructor.
      */
@@ -194,7 +196,7 @@ public final class xFOOx
     /**
      * Constructor.
      */
-    public xFOOx(int someParam)
+    public xFOOx(final int someParam)
     {
     }//end xFOOx()
 
@@ -222,7 +224,8 @@ public final class xFOOx
      * Constructs a configuration file from the specified name and list of
      * relative paths.
      */
-    static private File makeCfgfile(String name, String[] pathspec)
+    static private File makeCfgfile(final String name,
+                                    final String[] pathspec)
     {
         final Properties sysProps = System.getProperties();
         // user.dir :== The CWD that the program was run from.
@@ -281,7 +284,7 @@ public final class xFOOx
     /**
      *
      */
-    private void parseProgramProperties(String[] args)
+    private void parseProgramProperties(final String[] args)
         throws ProgramProperties.RequirementException,
         ProgramProperties.SyntaxStringsError, NumberFormatException
     {
@@ -296,7 +299,7 @@ public final class xFOOx
     /**
      *
      */
-    private void handleFileReadErr(Throwable ex, boolean isFatal)
+    private void handleFileReadErr(final Throwable ex, final boolean isFatal)
     {
         System.out.print("Error reading file:  \"");
         System.out.print(m__cfgfileFullPath.toString());
@@ -316,7 +319,7 @@ public final class xFOOx
      *
      * For when you don't want/need to use a {@link ProgramProperties}.
      */
-    private void readProperties(boolean failedReadIsFatal)
+    private void readProperties(final boolean failedReadIsFatal)
         throws NumberFormatException
     {
         // [NOTE:  You don't need to use ProgramProperties to read a
@@ -360,8 +363,6 @@ public final class xFOOx
         m__opts.someInt = m__optsParser.getIntProperty("prop.wai");
         // ...and so on.
     }
-
-
 }
 
 
