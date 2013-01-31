@@ -37,6 +37,10 @@ import static org.junit.Assume.*;
 //import java.text.*;
 //import javax.swing.*;
 
+//FIXME:  Remove any of these if not needed:
+import org.apache.log4j.Level;
+import org.slf4j.Logger;
+
 // FIXME:  Your Imports Go Here
 import jpw.libs.xPACKAGEx.xWITHx.xCLASSESx.xBEINGx.xTESTEDx.*;
 // FIXME:  End local lib imports
@@ -558,7 +562,14 @@ public class TJUnit4_xREPLACEMEx
     @Test(expected = Exception.class)
     final public void test__MethodBeingTested_ExpectedException_()
     {
-        printTestName(verbose, "A description.");
+        // FIXME:  This is optional.  The 'setUp()' and 'tearDown()' methods
+        // print out the actual start- & end-of-test messages.
+        printTestName(verbose, "Some custom start-of-test mesg.");
+
+        // This demonstrates how to spit out custom messages using the same
+        // mechanism that printTestName does.
+        printTestMsg(verbose, "Some additional description.");
+
         fail("Not yet implemented"); // TODO
     }
 
@@ -575,7 +586,14 @@ public class TJUnit4_xREPLACEMEx
     @Test(timeout = 60000)
     final public void test__MethodBeingTested_VerySlowMethodBeingTested_()
     {
-        printTestName(verbose, "A description.");
+        // FIXME:  This is optional.  The 'setUp()' and 'tearDown()' methods
+        // print out the actual start- & end-of-test messages.
+        printTestName(verbose, "Some custom start-of-test mesg.");
+
+        // This demonstrates how to spit out custom messages using the same
+        // mechanism that printTestName does.
+        printTestMsg(verbose, "Some additional description.");
+
         fail("Not yet implemented"); // TODO
     }
 
