@@ -4,7 +4,7 @@
 # optimization flags, since these usually differ from platform to platform.
 #
 #
-# Copyright (C) 2010-2011 by John P. Weiss
+# Copyright (C) 2012 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file
@@ -91,7 +91,7 @@ OPTIMIZE=-O3 -mieee-fp -malign-double \
 # Other optimizations:
 #     -mfpmath=sse
 #     -msse2
-#     -msse3  # for -march=core2 only
+#     -msse3                          # for -march=core2 only
 #     -maccumulate-outgoing-args
 #     -minline-all-stringops
 #  We'd need to try these out, one by one, and see how they improve
@@ -129,7 +129,7 @@ AM_FFLAGS += $(ARCHFLAGS)
 # Warnings (Per-Language)
 #
 
-AM_CFLAGS += -Wall -W -Wformat-security -Wshadow -Winline
+AM_CFLAGS += -Wall -W -Wformat-security -Wshadow
 # What this does:
 #     -Wall: Use all warnings,
 #     -W: use some additional ones
@@ -168,7 +168,8 @@ AM_CXXFLAGS += -felide-constructors \
 AM_CXXFLAGS += $(AM_CFLAGS)
 
 # Integer default size in FORTRAN
-## [jpw; 2011/06]  Required for gfortran v4.3 and earlier
+# [jpw; 201002]  This now appears deprecated, and INT is now 4 bytes by
+# 				 default.  For now.
 ##AM_FFLAGS += -i4
 
 
@@ -192,7 +193,6 @@ AM_FFLAGS += $(COMPILE_TYPE_COMMON)
 #DEBUG_FLAGS = 
 #COMPILE_TYPE_COMMON += $(DEBUG) #$(PROFILE) #$(DEBUG_FLAGS)
 #COMPILE_TYPE += $(DISABLE_INLINE)
-#COMPILE_TYPE += -D_BUILDING_LIB -D_ENABLE_LIB_TRACING
 
 ### Uncomment for profiling, coverage, and/or memleak debugging:
 
