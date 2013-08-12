@@ -16,7 +16,7 @@
 //
 
 
-package jpw.utest.xPKGx;
+package jpw.utests.xPKGx;
 
 
 // Imports
@@ -120,6 +120,15 @@ public class TJUnit4_xREPLACEMEx
     //public static final int c_PRE_CLOSE_DELAY_MS = 10000;
     //public static final String
     //c_END_OF_TEST_MSG = "...some message...";
+
+    //========== Test-Controlling Consts
+
+    // FIXME:  You may want to move these into a common base-class.
+    public static final double EPSILON_PRECISION = 1.e-12;
+
+    public static final int ITERS_MARK = 1000;
+    public static final int N_ITERS_MIN = 100;
+    public static final int N_ITERS_MAX = 100000;
 
 
     //--------------
@@ -324,6 +333,12 @@ public class TJUnit4_xREPLACEMEx
         // with the next line.  Otherwise, remove this comment and the
         // following line.
         //logTestName(ms__logger, ms__ourClass, m__myName);
+
+        // Prints out the current state of the pRNG.  This is useful for
+        // replicating a specific test.
+        //
+        // Remove if you're not doing nondeterministic tests.
+        utestRng().getSeed(true);
     }
 
 
@@ -445,8 +460,38 @@ public class TJUnit4_xREPLACEMEx
      * Test method for
      * {@link xCLASS_BEING_TESTEDx#__MethodBeingTested__}.
      *
+     * This method is boilerplate for nondeterministic testing.
+     */
+    @Ignore("not yet implemented")
+    @Test
+    final public void test__xi_MethodBeingTested_()
+    {
+        fail("Not yet implemented"); // TODO
+
+        // FIXME: Put any common setup here.
+
+
+        final int nIters = getTestIterations(N_ITERS_MIN, N_ITERS_MAX);
+        Coords posn = null;
+
+        for(int i=0; i<nIters; ++i) {
+            iterationMark(i, ITERS_MARK, false);
+
+            // FIXME: Put any per-iteration setup here.
+
+            subtest__xi_MethodBeingTested_(/*args*/);
+
+            // FIXME: Additional tests --- or alternate calls to
+            //        subtest__xi_MethodBeingTested_(...) --- go here.
+        }
+    }
+
+
+    /**
+     * Not a test method, but documentation thereof.
+     *
      * <p>
-     * FIXME:  Everything from here on is just information for unit-test
+     * FIXME:  This entire method is just information for unit-test
      * authors.  It should all be removed.
      * </p>
      *
@@ -474,7 +519,7 @@ public class TJUnit4_xREPLACEMEx
      */
     @Ignore("not yet implemented")
     @Test
-    final public void test__MethodBeingTested__()
+    final public void test__Notes__()
     {
         // NOTE:  Nonfatal Preconditions.
         //
@@ -586,23 +631,33 @@ public class TJUnit4_xREPLACEMEx
     @Test(timeout = 60000)
     final public void test__MethodBeingTested_VerySlowMethodBeingTested_()
     {
-        // FIXME:  This is optional.  The 'setUp()' and 'tearDown()' methods
-        // print out the actual start- & end-of-test messages.
-        printTestName(verbose, "Some custom start-of-test mesg.");
-
-        // This demonstrates how to spit out custom messages using the same
-        // mechanism that printTestName does.
-        printTestMsg(verbose, "Some additional description.");
-
         fail("Not yet implemented"); // TODO
     }
 
 
     //----------------
     //
-    // Additional Methods
+    // Subtest Methods
     //
     //----------------
+
+
+    /**
+     * Called by {@link #test__xi_MethodBeingTested_}.
+     */
+    final private void subtest__xi_MethodBeingTested_(/*args*/)
+    {
+    }
+
+
+    //======================================================================
+
+
+    //--------------------
+    //
+    // Additional Methods
+    //
+    //--------------------
 
 
     private void someOtherUtilMethod()
