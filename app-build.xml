@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written with the following assumptions:
+     + For sake of example, let "<AppName>" denote the main class of
+       your application.
+     + All of the applications classes reside in a package named
+       "jpw.progs.<AppName>"
+     + Your application is being packaged into a JARfile named
+       "<AppName>.jar".
+     + In the base directory are the directories:
+               "src/"
+               "classes/"
+               "jars/"
+     + The *.java files live in the directory "src/jpw/progs/<AppName>/"
+     + You've placed all of the *.jar files that you need for unit
+       testing & debugging in the  "jars/" directory.
+
+     Ant will build the compilation CLASSPATH using all of the "*.jar"
+     files in the "jars/" directory.  It will also add the "classes/"
+     directory to the CLASSPATH.
+-->
+<project basedir="." default="jar" name="AppName">
+
+    <target name="global_properties">
+        <!-- You can set up any variables you want used throughout the
+             script here. -->
+        <property name="package.name" value="${ant.project.name}"/>
+        <property name="src" value="${basedir}/src"/>
+        <property name="dest" value="${basedir}/classes"/>
+        <property name="docs" value="${basedir}/apidocs"/>
+        <property name="jars" value="${basedir}/jars"/>
+        <property name="main.class"
+                  value="jpw.progs.${package.name}.${ant.project.name}"/>
+        <property name="pkgjar"
+                  value="${basedir}/${ant.project.name}.jar"/>
+        <property name="jar.manifest" value="${basedir}/appManifest.mf"/>
+        <!-- Per-component property names. -->
+        <property name="proj_src"
+                  value="${src}/jpw/progs/${package.name}"/>
+    </target>
+
+    <target name="init" depends="global_properties">
+        <patternset id="sources" >
+            <include name="**/${package.name}/*.java"/>
+        </patternset>
+        <patternset id="built.classes" >
+            <include name="**/${package.name}/*.class"/>
+        </patternset>
+        <path id="my.classpath">
+            <!-- This is the class path used by Ant when it is run.
+            <pathelement path="${java.class.path}"/>
+            -->
+            <pathelement path="${dest}"/>
+            <fileset dir="${jars}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </path>
+    </target>
+
+    <target name="compile"
+            depends="init">
+        <!-- Both srcdir and destdir should be package roots. -->
+        <mkdir dir="${dest}"/>
+        <javac debug="true" deprecation="true"
+               destdir="${dest}" srcdir="${src}">
+            <classpath refid="my.classpath"/>
+            <patternset refid="sources"/>
+        </javac>
+    </target>
+
+    <target name="classpath"
+            depends="init">
+        <pathconvert targetOS="windows"
+                     property="out.classpath" refid="my.classpath"/>
+        <echo file="./set-classpath.sh">
+            CLASSPATH="${out.classpath}"
+            export CLASSPATH
+        </echo>
+        <replace file="./set-classpath.sh" token="            "/>
+    </target>
+
+    <target name="manifest"
+            depends="init,compile">
+        <!-- Note: The manifest file must not have any blank lines,
+             hence the peculiar line wrapping below.  Don't modify the
+             "Manifest-Version" line.  If you add anything, make sure
+             the final line ends with the "</echo>" tag. -->
+        <echo file="${jar.manifest}"
+              append="false"
+        >Manifest-Version: 1.0
+         Created-By: Ant 1.4.1
+         Main-Class: ${main.class}</echo>
+        <replace file="${jar.manifest}" token="         "/>
+    </target>
+
+    <target name="jar"
+            depends="init,compile,manifest">
+        <mkdir dir="${jars}"/>
+        <jar compress="true"
+             jarfile="${pkgjar}"
+             manifest="${jar.manifest}">
+            <fileset dir="${dest}">
+                <patternset refid="built.classes"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="deployable"
+            depends="init,manifest,jar">
+        <property name="staging" value="${basedir}/staging"/>
+        <mkdir dir="${staging}"/>
+        <apply executable="jar"
+               dir="${staging}">
+            <arg value="-xf"/>
+            <srcfile/>
+            <fileset dir="${jars}"
+                     includes="*.jar"/>
+        </apply>
+        <jar compress="true"
+             jarfile="${pkgjar}"
+             update="true"
+             manifest="${jar.manifest}"
+             basedir="${staging}"
+             excludes="**/META-INF/*"/>
+    </target>
+
+    <target name="javadoc"
+            depends="init"
+            description="Javadoc for the ${ant.project.name} package">
+        <mkdir dir="${docs}"/>
+        <javadoc destdir="${docs}">
+            <fileset dir="${proj_src}"/>
+        </javadoc>
+        <!-- Here's an alternate form
+        <javadoc destdir="${docs}"
+                 sourcepath="${src}"
+                 packagenames="jpw.progs.*"/>
+        -->
+    </target>
+
+    <target name="cleandocs" depends="init">
+        <delete dir="${docs}"/>
+    </target>
+
+    <target name="clean-deployable" depends="init">
+        <delete dir="${basedir}/staging"/>
+    </target>
+
+    <target name="clean"
+            depends="init,cleandocs,clean-deployable"
+            description="Clean all build products.">
+        <delete>
+            <fileset dir="${dest}">
+                <patternset refid="built.classes"/>
+            </fileset>
+        </delete>
+        <delete file="${pkgjar}"/>
+    </target>
+
+</project>

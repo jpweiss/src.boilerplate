@@ -1,0 +1,249 @@
+# -*- Makefile -*-
+#
+# WARNING WARNING WARNING
+# This file has not been modified from its GNU-make version!  It is not
+# guaranteed to work AT ALL with other "make" variants.  Someday, it will.
+# Just not today.
+# WARNING WARNING WARNING
+#
+# Copyright (C) 2013 by John P. Weiss
+#
+# This package is free software; you can redistribute it and/or modify
+# it under the terms of the Artistic License, included as the file
+# "LICENSE" in the source code archive.
+#
+# This package is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# You should have received a copy of the file "LICENSE", containing
+# the License John Weiss originally placed this program under.
+#
+# $Id$
+##########
+#
+# Initial includes
+#
+##########
+
+
+include make.vars.mk
+include $(BASEDIR)/make.syscfg.mk
+
+
+##########
+#
+# Source Variables
+#
+##########
+
+DOXYGEN_CFG=
+
+# Executables
+TARG_BINS:=ex why zee
+TARG_LIB:=libmylib
+TARG_COMMON_OBJS:=
+
+# Standalone Headers or C headers.
+HEADERS:=
+
+# C files
+CSRC:=
+
+# C++ files
+CXX_SRC:=foo.C bar.cc $(TARG_COMMON_OBJS:.o%=%.cc)
+
+# Headerless C++ files.
+CXX_SRC_NO_H:=
+CXX_SRC_NO_H += $(TARG_BINS:%=%.cc)
+
+#
+# Auto-generated variables for objects and headers.  Must be included here,
+# and no earlier.
+# Defines the $(OBJS) variable, which contains a list of all object files.
+#
+include $(BASEDIR)/make.autogenV.mk
+
+
+##########
+#
+# Make Rules
+#
+##########
+
+
+all:
+
+relink: clean_targs $(TARG_BINS) $(TARG_LIB)
+
+targ.exe: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+
+# GNU Make:
+# One side effect of '=' is that you can do "LIBS= -leveryone $(CUSTLIBS)"
+# and set CUSTLIBS later on, before calling the linker.  Using a
+# target-specific assignment is one way to do this.
+targ2.exe: LIBS += -lmylib
+
+targ2.exe: $(OBJS)
+	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+
+# Static library rule for most "make" variants.
+##$(TARG_LIB).a: $(OBJS_NEWLIB)
+##	$(AR) $(ARFLAGS) $@ $(OBJS_NEWLIB)
+##	ranlib $@
+
+# GNU Make:
+# Use a special builtin pattern rule.
+$(TARG_LIB).a: $(TARG_LIB).a($(OBJS_NEWLIB))
+
+$(TARG_LIB).so: $(OBJS)
+	$(CXX) $(LDFLAGS) -shared -fPIC -o $@ $(OBJS) $(LIBS)
+
+# Multi-targ make example
+### The  "targs : pattern : dep-patern" is a GNU-make special (called "static
+### pattern rules").
+##$(TARG_BINS): % : %.o $(TARG_COMMON_OBJS)
+##	$(CXX) $(LDFLAGS) -o $@ $@.o $(TARG_COMMON_OBJS) $(LIBS)
+
+#
+# Installation rules.
+
+$(BINDIR):
+	mkdir $(BINDIR)
+
+$(LIBDIR):
+	mkdir $(LIBDIR)
+
+$(INCDIR):
+	mkdir $(INCDIR)
+
+install_bin: $(BINDIR) $(LIBDIR)
+
+install_headers: $(INCDIR)
+
+install_headers: $(HEADERS)
+	cp $(HEADERS) $(INCDIR)/
+
+install_bin: $(TARG_BINS)
+	cp $(TARG_BINS) $(BINDIR)/
+	cp $(TARG_LIB).a $(TARG_LIB).so $(LIBDIR)/
+
+test: utest
+unit_test: utest
+utest:
+	(cd utests; make all)
+
+#
+# Object files.  The vars were all defined in "make.autogenV.mk"
+# Not strictly needed for compilers that place the source file's name in the
+# generated *.d file.
+#
+# You can remove this if the whole of the "Dependencies" section below works
+# on your platform.
+#
+
+#$(COBJS): $($@:.o=.c)
+
+#$(CXX_OBJS_C): $($@:.o=.C)
+
+#$(CXX_OBJS_cc): $($@:.o=.cc)
+
+#$(CXX_OBJS_cpp): $($@:.o=.cpp)
+
+
+#
+# Dependencies
+#
+
+# Modern compilers should handle this:
+
+$(CSRC:.c=.d): $($@:.d=.c)
+	set -e; $(CC) $(C_DEPFLAGS) $(CPPFLAGS) $< \
+	    | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+		  [ -s $@ ] || rm -f $@
+
+$(CXX_SRC_C:.C=.d): $($@:.d=.C)
+	set -e; $(CXX) $(C_DEPFLAGS) $(CPPFLAGS) $< \
+	    | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+		  [ -s $@ ] || rm -f $@
+
+$(CXX_SRC_cc:.cc=.d): $($@:.d=.cc)
+	set -e; $(CXX) $(C_DEPFLAGS) $(CPPFLAGS) $< \
+	    | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+		  [ -s $@ ] || rm -f $@
+
+$(CXX_SRC_cpp:.cpp=.d): $($@:.d=.cpp)
+	set -e; $(CXX) $(C_DEPFLAGS) $(CPPFLAGS) $< \
+	    | sed 's/\($*\)\.o[ :]*/\1.o $@ : /g' > $@; \
+		  [ -s $@ ] || rm -f $@
+
+# Note:  For non-GNU implementations of "make", you should change all of these
+# to implicit rules (e.g.: ".cc.d:"  ".c.d:" and so on), and add the special
+# rule:
+#     .SUFFIXES: .d
+# All of this should come after any variable definitions and before any local
+# rules.
+
+-include $(CSRC:.c=.d)
+-include $(CXX_SRC_C:.C=.d) $(CXX_SRC_cc:.cc=.d) $(CXX_SRC_cpp:.cpp=.d)
+
+
+#
+# Cleanup
+#
+
+clean:
+	-rm -f $(OBJS) *.d
+
+clean_targs:
+	-rm -f $(TARG_LIB).a  $(TARG_LIB).so $(TARG_BINS)
+
+veryclean: clean clean_targs
+	(cd utests; make clean)
+	-rm -f $(OTHERSTUFF)
+
+#
+# Packaging
+#
+
+srcdocs:
+	doxygen $(DOXYGEN_CFG)
+
+tardist:
+	( \
+	chmod -R a-w $(SRCDOCDIR); \
+	cd bin;strip *;cd ..; \
+	olddir=`pwd | awk 'BEGIN{FS="/"};{print $$NF}'`; \
+	echo $${olddir}; \
+	cd ../; \
+	find $${olddir} \
+		\( -path "*/scratch*" -o -path "*/CVS/*" \) -prune -o \
+		\( -name '*.h' -o -name '*.C' -o -name '*.cc' -o -name '*.c'\
+			-o -name '*.txt' \
+			-o -name '*akefile' -o -name '*akefile.*' -o -name '*.mk' \
+			-o -name 'README' -o -name 'LICENSE' -o -name 'WARRANTY' \
+			-o -path "*/bin/*" -o -path "*/lib*" \
+			-o -path "*html*" -o -path "*rtf*" \) -print \
+        | tar zcvf audio.tgz -p --files-from=- ; \
+	cd $${olddir}; \
+	chmod -R +w $(SRCDOCDIR); \
+	)
+
+# Should use Doxygen now.
+srcdocs_docPlusPlus:
+	( \
+	allstuff=`echo $(HEADERS)`; \
+	if [ -d $(SRCDOCDIR) ]; then \
+		rm -rf $(SRCDOCDIR)/*; \
+	else \
+		mkdir $(SRCDOCDIR); \
+	fi; \
+	doc++ -k -u -g -j -B $(BASEDIR)/.cr \
+		-d $(SRCDOCDIR) $$allstuff; \
+	)
+
+
+#################
+#
+#  End

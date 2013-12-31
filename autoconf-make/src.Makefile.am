@@ -1,0 +1,51 @@
+##                                               -*- Makefile -*-
+## Process this file with automake to produce Makefile.in
+## 
+## (Note:  Use double-comments with autoconf files.)
+## 
+## $Id$
+#############
+
+
+## [jpw]  Define targets and sources:
+##
+bin_PROGRAMS = #@prog-names-here@#
+%prog1-name%_SOURCES = X11Display.h \
+	LinuxInputEvent.h LinuxInputEvent.cc \
+	LinuxInputDevice.h LinuxInputDevice.cc \
+	Trace.cc Daemonizer.cc \
+	ProgramOptions_Base.cc msnek4k_driverd.cc \
+	LibTrace.h Trace.h Daemonizer.h ProgramOptions_Base.h
+%prog1-name%_LDADD = #@add-any-others-here@#
+
+dist_bin_SCRIPTS = #@scripts-that-should-be-installed-in-$(bindir)@#
+
+## [jpw] Example:  When you can't use dist_bin_SCRIPTS, and want to include
+## files in the source package, do something like this:
+#%custom-descr-name%#dir = #@install-path-goes-here@#
+# N.B.:  '#%custom-descr-name%#_DATA' requires '#%custom-descr-name%#dir'
+#%custom-descr-name%#_DATA = #@extra-files-go-here@#
+
+
+## [jpw] Example:  You have scripts or other files that require the value of
+## `configure' variables.  You can put their names in configure.ac to
+## auto-generate them, but you'll still need to add the following lines:
+#%files-dot-in-name%#dir = #@install-path-goes-here@#
+# N.B.:  '#%files-dot-in-name%#_DATA' requires '#%files-dot-in-name%#dir'
+#%files-dot-in-name%_DATA = #@file1@# #@file2.example.m@#
+#EXTRA_DIST = #@file1.in@# #@file2.example.m.in@#
+#CLEANFILES = $(%files-dot-in-name%_DATA)
+
+
+## [jpw]  Example:  How to install another file to a different location
+#install-exec-local: 90x11-msnek4k_driverd
+#	test -d $(DESTDIR)/$(XSESSIOND_PATH) || \
+#	    mkdir -p $(DESTDIR)/$(XSESSIOND_PATH)
+#	$(INSTALL_DATA) $(srcdir)/90x11-msnek4k_driverd \
+#		$(DESTDIR)/$(XSESSIOND_PATH)
+
+
+## [jpw]  System-Specific Makefile Vars and Generic Build-Customizations
+##
+include $(top_srcdir)/make.syscfg.mk
+

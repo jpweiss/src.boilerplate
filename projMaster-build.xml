@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written with the following assumptions:
+     + For sake of example, let's use the following notation for
+       parameters:
+       - "<ProjectName>"==The overall of the name project.
+       - "<SubProj1>"
+         :
+         "<SubProjK>"
+         :
+         "<SubProjN>"==The names of each of the subprojects.
+     + In the base directory are the directories:
+               "src/"
+               "classes/"
+               "jars/"
+               "utest/"
+     + You've placed all of the *.jar files that you need for unit
+       testing & debugging in the  "jars/" directory.
+     + All of the classes for each subproject reside in a package for
+       that subproject.
+       - The packages for each subproject have names of the form:
+         "jpw.progs.<ProjectName>.<SubProjK>".
+       - The *.java files for each subproject live in the directory
+         "src/jpw/progs/<ProjectName>/<SubProjK>/".
+       - Each subproject has its own, fully-functional "build.xml" file.
+     + The "utest/" directory contains its own package and its own
+       "build.xml" file.
+
+     This master-"build.xml" file defines the following global
+     properties for use by the subprojects' "build.xml" files:
+       + "src"==Base directory of the source tree.
+       + "dest"==Directory containing "*.class" files compiled from
+                 the source.
+       + "docs"==Directory in which to install javadoc-generated files.
+       + "jars"==Directory containing all "*.jar" files used by this
+                 project and its subprojects.
+       + "subproj_src"==Base directory containing the subprojects.
+     They will override any definitions in the subprojects'"build.xml"
+     files.  If you need to use a customized value for any of these
+     properties, rename that property.
+
+     To add a subproject to this file,
+       1. Create (or copy & modify) the target "subP1", below.
+       2. In that target, change the 'dir' property in the '<ant/>' action
+          to the name of the subproject's subdirectory.  Usually, this
+          means changing the "subP1" part of
+          'dir="${subproj_src}/subP1"'.
+       3. If there are any cross-subproject-dependencies, modify the
+          target's 'depends' attribute to point to the relevant
+          subproject(s).
+       4. If you want to do something other than build a JAR-file,
+          modify the 'target' attribute of the '<ant/>' action.
+       5. Add the name of the new target to the list of targets in the
+          'depends' attribute of the target, 'all.sub'.
+     If you have fewer than 4 subprojects to start with, comment out
+     or delete "subP2", "subP3" and "subP4".
+
+     Note that you can make more than one subproject "<target/>" for
+     each actual subproject.  For example, you could have two
+     "<target/>"s for a subproject: one to recompile, and one to build
+     the *.jar file.  You could then do a recompile directly from the
+     master antfile.
+-->
+<project basedir="." default="javadoc" name="ProjectName">
+
+    <target name="global_properties">
+        <!-- You can set up any variables you want used throughout the
+             script (and in any subscripts) here. -->
+        <property name="src" value="${basedir}/src"/>
+        <property name="dest" value="${basedir}/classes"/>
+        <property name="docs" value="${basedir}/apidocs"/>
+        <property name="jars" value="${basedir}/jars"/>
+        <!-- DO NOT name this "proj_jar" for a master-"build.xml".  It
+             screws up the JARfile names in the subprojects. -->
+        <property name="masterjar"
+                  value="${jars}/${ant.project.name}.jar"/>
+        <!-- Per-component property names. -->
+        <property name="subproj_src"
+                  value="${src}/jpw/progs/<ProjectName>"/>
+    </target>
+
+    <target name="init" depends="global_properties">
+        <patternset id="sources" >
+            <include name="${src}/**/*.java"/>
+        </patternset>
+        <patternset id="built.classes" >
+            <include name="${dest}/**/*.class"/>
+        </patternset>
+        <path id="my.classpath">
+            <pathelement path="${dest}"/>
+            <fileset dir="${jars}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </path>
+    </target>
+
+
+    <!-- All of these subproject targets use 'inheritAll="true"' to
+         force use of the global properties we've defined here, in the
+         master buildfile.
+
+         The lone exception is the target "utest", which lives in its
+         own directory and builds only standalone classfile apps.
+     -->
+
+    <target name="all.sub"
+            depends="subP1,subP2,subP3,subP4"/>
+
+    <!-- No need to modify this target. Skip to the targets below. -->
+    <target name="utest"
+            depends="global_properties">
+        <ant dir="${basedir}/utest"
+             inheritAll="true"
+             target="compile">
+            <property name="src" value="${basedir}/utest"/>
+        </ant>
+    </target>
+
+    <target name="subP1"
+            depends="global_properties">
+        <ant dir="${subproj_src}/subP1"
+             inheritAll="true"
+             target="jar"/>
+    </target>
+
+    <target name="subP2"
+            depends="global_properties">
+        <ant dir="${subproj_src}/subP2"
+             inheritAll="true"
+             target="jar"/>
+    </target>
+
+    <target name="subP3"
+            depends="global_properties">
+        <ant dir="${subproj_src}/subP3"
+             inheritAll="true"
+             target="jar"/>
+    </target>
+
+    <target name="subP4"
+            depends="global_properties">
+        <!-- Here's an example of a subproject that uses an ANT-file
+             that isn't named "build.xml". -->
+        <ant dir="${subproj_src}/subP4"
+             inheritAll="true"
+             antfile="build-otherapp.xml"
+             target="jar"/>
+    </target>
+
+
+    <!-- Other targets.  Shouldn't need any/much modification. -->
+
+    <target name="classpath"
+            depends="init">
+        <pathconvert targetOS="windows"
+                     property="out.classpath" refid="my.classpath"/>
+        <echo file="./set-classpath.sh">
+            CLASSPATH="${out.classpath}"
+            export CLASSPATH
+        </echo>
+        <replace file="./set-classpath.sh" token="            "/>
+    </target>
+
+    <target name="javadoc"
+            depends="init"
+            description="Javadoc for the ${ant.project.name} package">
+        <mkdir dir="${docs}"/>
+        <!-- [jpw] I hate this.  Why should I have to specify all
+             of this path info?  Ant should be able to figure this
+             out on its own... -->
+        <javadoc destdir="${docs}"
+                 sourcepath="${src}"
+                 packagenames="<ProjectName>.*">
+        </javadoc>
+    </target>
+
+    <target name="cleandocs" depends="init">
+        <delete dir="${docs}"/>
+    </target>
+
+    <target name="clean"
+            depends="init,cleandocs"
+            description="Clean all build products.">
+        <delete>
+            <fileset dir="${dest}">
+                <patternset refid="built.classes"/>
+            </fileset>
+        </delete>
+        <delete file="${masterjar}"/>
+    </target>
+
+</project>

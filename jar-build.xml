@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written with the following assumptions:
+     + Your JARfile contains a single package.  Call it "<pkgname>"
+       for the sake of these comments.
+     + The package's name is "jpw.<pkgname>"
+     + Your JARfile will be named "<pkgname>.jar".
+     + The *.java files live in the directory
+       "src/jpw/libs/<pkgname>/"
+     + The "utest/" subdirectory contains its own package and its own
+       "build.xml" file.
+     + In the parent directory of "src" are the directories:
+               "src/"
+               "classes/"
+               "jars/"
+     + You've placed all of the *.jar files that you need for unit
+       testing & debugging in the  "jars/" directory.
+
+     Ant will build the compilation CLASSPATH using all of the "*.jar"
+     files in the "jars/" directory.  It will also add the "classes/"
+     directory to the CLASSPATH.
+-->
+<project basedir="../../../.." default="jar" name="JarName">
+
+    <target name="global_properties">
+        <!-- You can set up any variables you want used throughout the
+             script here. -->
+        <property name="src" value="${basedir}/src"/>
+        <property name="dest" value="${basedir}/classes"/>
+        <property name="docs" value="${basedir}/apidocs"/>
+        <property name="jars" value="${basedir}/jars"/>
+        <property name="proj_src"
+                  value="${src}/jpw/libs/${ant.project.name}"/>
+        <property name="pkgjar"
+                  value="${jars}/${ant.project.name}.jar"/>
+    </target>
+
+    <target name="init" depends="global_properties">
+        <patternset id="sources" >
+            <include name="**/${ant.project.name}/*.java"/>
+        </patternset>
+        <patternset id="built.classes" >
+            <include name="**/${ant.project.name}/*.class"/>
+        </patternset>
+        <path id="my.classpath">
+            <!-- This is the class path used by Ant when it is run.
+            <pathelement path="${java.class.path}"/>
+            -->
+            <pathelement path="${dest}"/>
+            <fileset dir="${jars}">
+                <include name="**/*.jar"/>
+            </fileset>
+            <!-- Add here any other JAR's & directories which you need to
+                 build this project.  They'll be added to the CLASSPATH -->
+        </path>
+    </target>
+
+    <target name="compile"
+            depends="init">
+        <!-- Both srcdir and destdir should be package roots. -->
+        <mkdir dir="${dest}"/>
+        <javac debug="true" deprecation="true"
+               destdir="${dest}" srcdir="${src}">
+            <!-- Some jars may need to refer to others.  If that's the
+                 case, keep the line below.  Otherwise, you can safely
+                 remove it. -->
+            <classpath refid="my.classpath"/>
+            <patternset refid="sources"/>
+        </javac>
+    </target>
+
+    <target name="jar"
+            depends="init,compile">
+        <mkdir dir="${jars}"/>
+        <jar basedir="${dest}" compress="true" jarfile="${pkgjar}">
+            <patternset refid="built.classes"/>
+        </jar>
+    </target>
+
+    <target name="javadoc"
+            depends="init"
+            description="Javadoc for the ${ant.project.name} package">
+        <mkdir dir="${docs}"/>
+        <javadoc destdir="${docs}">
+            <fileset dir="${proj_src}"/>
+        </javadoc>
+    </target>
+
+    <target name="cleandocs" depends="init">
+        <delete dir="${docs}"/>
+    </target>
+
+    <target name="clean"
+            depends="init,cleandocs"
+            description="Clean all build products.">
+        <delete>
+            <fileset dir="${dest}">
+                <patternset refid="built.classes"/>
+            </fileset>
+        </delete>
+        <delete file="${pkgjar}"/>
+    </target>
+
+    <target name="utest_properties"
+            depends="global_properties">
+        <!-- ${utdest} should be the parent of the target "utest"
+             install path. -->
+        <property name="utdest" value="${basedir}"/>
+        <property name="utsrc" value="${proj_src}/utest"/>
+    </target>
+    <target name="utest"
+            depends="utest_properties,compile">
+        <mkdir dir="${utdest}/utest"/>
+        <javac debug="true" deprecation="true"
+               destdir="${utdest}" srcdir="${utsrc}">
+            <classpath refid="my.classpath"/>
+        </javac>
+    </target>
+
+</project>
