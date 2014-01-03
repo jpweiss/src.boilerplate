@@ -3,7 +3,7 @@
 # Special GNU-make file of installation rules.
 #
 #
-# Copyright (C) 2013 by John P. Weiss
+# Copyright (C) 2014 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file
@@ -36,9 +36,26 @@
 #   TARG_BINS
 
 
+##########
+#
+# Variables
+#
+##########
+
+
+SHELL=/bin/bash
+#T# SHELL=/bin/ksh
+
+#T# The inlined-shell-scripts used by these rules require the ''[[''
+#T# operator.  If your system's ''/bin/sh'' doesn't have this operator, you'll
+#T# need to set the ''SHELL'' variable above.
+
+
+##########
 #
 # The Rules
 #
+##########
 
 
 $(BINDIR):
@@ -75,17 +92,28 @@ install_headers.symlink: $(HEADER_INSTALLABLES)
 	@for targ in $?; do \
 		link=$(INCDIR)/$${targ#/}; \
 		linkPath=`dirname $${link}`; \
-		if [ ! -d $${linkPath} ]; then \
+		if [[ ! -d $${linkPath} ]]; then \
 			mkdir -p $${linkPath} || break; \
 		fi; \
-		if [ ! -L $${link} ]; then \
+		if [[ -L $${link} ]]; then \
+			if [[ ! -r $${link} ]]; then \
+				rm -f $${link} && ln -s $${PWD}/$${targ} $${link} \
+				    || break; \
+			fi; \
+		else \
 			ln -s $${PWD}/$${targ} $${link} || break; \
 		fi; \
 	done
 
 #T# Note:
-#T# The ''if [ ! -L $${link} ];'' will only work with bash/ksh.  If using the
-#T# old, creaky, Bourne Shell, replace the ''-L'' with a ''-r''.
+#T# The ''if [[ -L $${link} ]];'' will only work with bash/ksh.  If using
+#T# a strictly-POSIX shell, replace the ''-L'' with ''-h''.  You'll also
+#T# need to change all of the ''[['' to ''['' and '']]'' to '']]''.
+#T# If using the old, creaky, Bourne Shell, you'll need to replace the entire
+#T# ''if''-line  with:
+#T#     ''if test -L "$${link}"; then''
+#T# You're better off replacing that old, creaky Bourne Shell with 'ksh',
+#T# however.  ;)
 
 
 # Installation rules for binaries.
