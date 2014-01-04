@@ -1,6 +1,6 @@
 ## A set of custom Autoconf macros that I commonly use.
 ##
-## Copyright (C) 2013 by John P. Weiss
+## Copyright (C) 2014 by John P. Weiss
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the Artistic License, included as the file
