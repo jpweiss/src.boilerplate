@@ -1,5 +1,5 @@
 # -*- Makefile -*-
-# Copyright (C) 2013 by John P. Weiss
+# Copyright (C) 2014 by John P. Weiss
 #
 # This package is free software; you can redistribute it and/or modify
 # it under the terms of the Artistic License, included as the file
@@ -28,7 +28,11 @@
 ##########
 
 
-TARG_SUBDIRS:=
+TARG_SUBDIRS_INSTALL:=src
+TARG_SUBDIRS:=$(TARG_SUBDIRS_INSTALL) utests
+#T# If this Makefile isn't in the toplevel directory, delete the "utests"
+#T# from the previous line, and put all of your subdirs in the
+#T# ''TARG_SUBDIRS_INSTALL'' variable.
 
 DOXYGEN_CFG:=
 DOXYGEN_CFG_TARG_DIR:=
@@ -48,36 +52,41 @@ TARPKG_NAME=
 ##########
 
 
-#T# Alternatives:  call "install" or "run"
-all: build_all
+#T# Alternatives:  call "build_all", "install" or "run"
+all: build_all_installable
 
 relink: $(TARG_SUBDIRS:%=%.relink_all)
 
 build_all: $(TARG_SUBDIRS:%=%.build_all)
 
-install: $(TARG_SUBDIRS:%=%.install)
+build_all_installable: $(TARG_SUBDIRS_INSTALL:%=%.build_all)
+
+install: $(TARG_SUBDIRS_INSTALL:%=%.install)
 
 reinstall: relink install
 
+#T# If you remove the ''$(TARG_SUBDIRS:%=%.run)'' rule below, remove this
+#T# rule, too:
 run: $(TARG_SUBDIRS:%=%.run)
 
-clean: $(TARG_SUBDIRS:%=%.clean)
+clean: clean_gcov $(TARG_SUBDIRS:%=%.clean)
 
-veryclean: $(TARG_SUBDIRS:%=%.veryclean)
+clean_binaries:
+	-rm bin/*
+	-rm lib/lib*.a
+	-rm lib/*.so
+
+veryclean: clean_binaries $(TARG_SUBDIRS:%=%.veryclean)
 
 gcov: $(TARG_SUBDIRS:%=%.gcov)
-
 
 # Remove or alter these as needed.
 clean_gcov:
 	-find . \( -name '*.gcov' -o  -name '*.gcda' -o  -name '*.gcno' \) \
 		-exec rm -v '{}' ';'
 
-#T# Remove the "find" line if this isn't the toplevel Makefile.
-distclean: $(TARG_SUBDIRS:%=%.veryclean)
-	find . -name '*.d' -exec rm -v \{\}\;
-	-rm bin/*
-	-rm lib/*.a lib/*.so
+distclean: $(TARG_SUBDIRS:%=%.veryclean) clean_binaries
+	-find . -name '*.d' -exec rm -v '{}' ';'
 
 #T# For binaries & executables
 $(TARG_SUBDIRS:%=%.build_all):
@@ -88,12 +97,8 @@ $(TARG_SUBDIRS:%=%.relink_all):
 	cd $(@:%.relink_all=%); $(MAKE) relink
 
 #T# For binaries & executables
-$(TARG_SUBDIRS:%=%.install):
+$(TARG_SUBDIRS_INSTALL:%=%.install):
 	cd $(@:%.install=%); $(MAKE) install
-
-#T# For Unit Tests
-$(TARG_SUBDIRS:%=%.run):
-	cd $(@:%.run=%); $(MAKE) run
 
 $(TARG_SUBDIRS:%=%.clean):
 	cd $(@:%.clean=%); $(MAKE) clean
@@ -103,6 +108,18 @@ $(TARG_SUBDIRS:%=%.veryclean):
 
 $(TARG_SUBDIRS:%=%.gcov):
 	cd $(@:%.gcov=%); make gcov
+
+#T# For Unit Tests ... IF they're inside of the source subdirs!
+#T# Otherwise, remove this section and replace with the next rule:
+$(TARG_SUBDIRS:%=%.run):
+	cd $(@:%.run=%); $(MAKE) run
+
+#T# For Unit Tests ... IF they're inside of a single, dedicated subdirectory
+#T# of your toplevel directory.  Otherwise, remove the next two rules.
+utests: utests.build_all
+
+utests.run: utests
+	cd utests; $(MAKE) run
 
 clean_tags:
 	-rm -f TAGS
@@ -130,17 +147,31 @@ ebrowse:
 	)
 
 
-# Make sure the unit tests are built after the source.
-utests.all: src.all
-#T# Remove the above if there's no 'utests' subdirectory in the directory
-#T# where this Makefile lives.
-
-
+#
 # Packaging
 #
+
+
 include make.vars.mk
 include make.tar_n_doc.mk
 #T# Remove the above 2 lines if this isn't the toplevel Makefile.
+
+
+#
+# Subdir Dependencies
+#
+
+
+# Make sure the unit tests are built after the source is built AND installed.
+utests.build_all: src.build_all src.install
+#T# Remove the above if there's no 'utests' subdirectory in the directory
+#T# where this Makefile lives.
+
+#T# Put your additional dependency rules here.  For example:
+#T#
+#T#foobin.*:  barlib.install
+#T#
+#T#boinglib.build_all:  barlib.install_headers
 
 
 #################
