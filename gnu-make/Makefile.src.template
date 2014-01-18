@@ -164,6 +164,12 @@ gcov: $(SRC)
 	done
 
 #
+# Common Rules
+#
+
+include $(BASEDIR)/make.miscrules.mk
+
+#
 # Dependencies
 #
 include $(BASEDIR)/make.deprules.mk
@@ -187,7 +193,7 @@ include $(BASEDIR)/make.installrules.mk
 #T# In place of ''install_libs'', you can also use one of the following:
 #T#     * install_static_libs
 #T#     * install_dynamic_libs
-install: install_libs install_bin install_headers
+install: install_headers install_libs install_bin
 
 
 #################

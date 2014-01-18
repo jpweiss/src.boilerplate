@@ -62,6 +62,9 @@ distclean_toplevel: veryclean depclean
 	-rm -fr $(BINDIR)/* $(LIBDIR)/* $(INCDIR)/* $(SRCDOCDIR)/*
 
 
+.PHONY: clean clean_targs gprofclean veryclean depclean distclean_toplevel
+
+
 #################
 #
 #  End
