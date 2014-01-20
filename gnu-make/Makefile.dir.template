@@ -28,6 +28,13 @@
 ##########
 
 
+# Common Variables
+#
+include make.vars.mk
+#T# You need this rule to get the variable $(BASEDIR).
+#T# If this is your toplevel Makefile, remove it.
+
+
 TARG_SUBDIRS_INSTALL:=src
 TARG_SUBDIRS:=$(TARG_SUBDIRS_INSTALL) utests
 #T# If this Makefile isn't in the toplevel directory, delete the "utests"
@@ -145,6 +152,12 @@ ebrowse:
 	eval "find . -type f -a \( $$nameopts \) -print" \
 	    | ebrowse --verbose \
 	)
+
+#
+# Common Rules
+#
+
+include $(BASEDIR)/make.miscrules.mk
 
 
 #
